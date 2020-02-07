@@ -1,0 +1,46 @@
+<svg>
+  <svg viewport-fill="#111111">
+    <section x="20" y="40" height="36" width="100%">
+      <g id='weather'>
+        <text id="cityname" x="$+7" y="$"></text>
+        <image id="weatherIcon" y="$-22" width="40" height="40"/>
+        <text id="degrees" y="$-12" x="$"></text>
+      </g>
+    </section>
+    <section x="50%" y="80%">
+      <g id='heartRate'>
+        <image x="$-16" y="$" width="32" height="32" href="heart.png" />
+        <text x="$-16" y="$-14" id="heartratetext">--</text>
+      </g>
+    </section>
+    <section x="85%" y="30">
+      <g id="steps">
+        <image x="$" y="$-4" width="20" fill="#ffffff" height="20" href="steps.png" />
+        <text x="$-22" y="$-4" id="stepstext">---</text>
+      </g>
+    </section>
+    <section x="92%" y="50%">
+      <g id="todayDate">
+        <rect x="$-64" y="$-14" width="64" height="30" fill="#8D8A8A" />
+        <rect x="$-62" y="$-28" width="60" height="26" fill="#000000" />
+        <rect x="$-58" y="$-24" width="56" height="22" fill="#8D8A8A" />
+        <text x="$-28" y="$-5" id="dateText">12 Jan</text>
+      </g>
+    </section>
+    <image x="0" y="0" width="100%" height="100%" href="hoursLayer.png" />
+    <image id="minutesLayer" x="0" y="0" width="100%" height="100%" href="minutesLayer.png" />
+    <!-- <image x="0" y="0" width="100%" height="100%" href="clockdigits.png" /> -->
+    <g id="mins" pointer-events="visible" transform="translate(50%,50%)">
+      <line x1="0" y1="0" x2="0" y2="-40%" stroke-width="5" class="color1" fill="#e0e0e0" opacity="0.7"/>
+    </g>
+    <g id="hours" pointer-events="visible" transform="translate(50%,50%)">
+      <line x1="0" y1="0" x2="0" y2="-30%" stroke-width="8" class="color1" fill="#ffffff" opacity="0.7"/>
+    </g>
+    <g id="secs" transform="translate(50%,50%)">
+      <line x1="0" y1="8%" x2="0" y2="-45%+2" stroke-width="2" class="color1" fill="#ff0000" />
+    </g>
+    <circle cx="50%" cy="50%" r="8" fill="#ff0000" />
+    <circle cx="50%" cy="50%" r="6" fill="#000000" />
+  </svg>
+
+</svg>
