@@ -27,9 +27,8 @@
         <text x="$-28" y="$-5" id="dateText">12 Jan</text>
       </g>
     </section>
-    <image x="0" y="0" width="100%" height="100%" href="hoursLayer.png" />
-    <image id="minutesLayer" x="0" y="0" width="100%" height="100%" href="minutesLayer.png" />
-    <!-- <image x="0" y="0" width="100%" height="100%" href="clockdigits.png" /> -->
+    <image x="0" y="0" width="100%" height="100%" href="hoursLayer8bit.png" />
+    <image id="minutesLayer" x="0" y="0" width="100%" height="100%" href="minutesLayer8bit.png" />
     <g id="mins" pointer-events="visible" transform="translate(50%,50%)">
       <line x1="0" y1="0" x2="0" y2="-40%" stroke-width="5" class="color1" fill="#e0e0e0" opacity="0.7"/>
     </g>

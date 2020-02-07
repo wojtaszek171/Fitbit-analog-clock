@@ -9,6 +9,9 @@ import { today } from 'user-activity';
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
+
+const weatherInterval = null;
+
 // Update the clock every second
 clock.granularity = "seconds";
 
@@ -17,8 +20,6 @@ let minHand = document.getElementById("mins");
 let secHand = document.getElementById("secs");
 let heartRateText = document.getElementById("heartratetext");
 let dateText = document.getElementById("dateText");
-
-clock.granularity = 'seconds'; // seconds, minutes, hours
 
 // Returns an angle (0-360) for the current hour in the day, including minutes
 function hoursToAngle(hours, minutes) {
@@ -30,32 +31,10 @@ function hoursToAngle(hours, minutes) {
 // Request weather data from the companion
 function fetchWeather() {
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-    // Send a command to the companion
     messaging.peerSocket.send({
       command: 'weather'
     });
   }
-}
-
-// Display the weather data received from the companion
-function processWeatherData(data) {
-  const enabled = data.enabled;
-  const img = document.getElementById("weatherIcon");
-  const cityname = document.getElementById("cityname");
-  const degrees = document.getElementById("degrees");
-
-  if (enabled === 'true') {
-    const el = data.weatherElements[0];
-    cityname.text = data.cityName;
-    img.href = "weatherimages/"+el.icon+".png";
-    degrees.text = Math.round(data.temperature) + "°";
-  } else {
-    const el = data.weatherElements[0];
-    cityname.text = '';
-    img.href = '';
-    degrees.text = '';
-  }
-
 }
 
 // Returns an angle (0-360) for minutes
@@ -69,7 +48,7 @@ function secondsToAngle(seconds) {
 }
 
 // Rotate the hands every tick
-function updateClock(evt) {
+function updateClock() {
   let todayDate = new Date();
   let hours = todayDate.getHours() % 12;
   let mins = todayDate.getMinutes();
@@ -84,12 +63,37 @@ function updateClock(evt) {
   dateText.text = todayDate.getDate() + " " + monthNames[todayDate.getMonth()].substring(0, 3);
 }
 
+// Display the weather data received from the companion
+function processWeatherData(data) {
+  const enabled = data.enabled;
+  const updateMinutes = data.updateEveryMinutes ? data.updateEveryMinutes : 30;  
+  const img = document.getElementById("weatherIcon");
+  const cityname = document.getElementById("cityname");
+  const degrees = document.getElementById("degrees");
+  
+  if (enabled === 'true') {
+    const el = data.weatherElements[0];
+    cityname.text = data.cityName;
+    img.href = "weatherimages/"+el.icon+".png";
+    degrees.text = Math.round(data.temperature) + "°";
+    
+    // Fetch the weather every 30 minutes
+    if(weatherInterval !== null) {
+      clearInterval(weatherInterval);
+    }
+    weatherInterval = setInterval(fetchWeather, Number(updateMinutes) * 1000 * 60);
+  } else {
+    cityname.text = '';
+    img.href = '';
+    degrees.text = '';
+  }
+}
+
 // Update the clock every tick event
-clock.ontick = (evt) => updateClock(evt);
+clock.ontick = () => updateClock();
 
 // Listen for the onopen event
 messaging.peerSocket.onopen = function() {
-  // Fetch weather when the connection opens
   fetchWeather();
 }
 
@@ -102,15 +106,10 @@ messaging.peerSocket.onmessage = function(evt) {
 
 // Listen for the onerror event
 messaging.peerSocket.onerror = function(err) {
-  // Handle any errors
   console.log("Connection error: " + err.code + " - " + err.message);
 }
 
-// Fetch the weather every 30 minutes
-setInterval(fetchWeather, 30 * 1000 * 60);
-
 const hrm = null;
-const bodyPresence = null;
 
 if (HeartRateSensor) {
   hrm = new HeartRateSensor();
@@ -119,6 +118,8 @@ if (HeartRateSensor) {
   });
   hrm.start();
 }
+
+const bodyPresence = null;
 
 if (BodyPresenceSensor) {
   bodyPresence = new BodyPresenceSensor();
@@ -133,6 +134,8 @@ if (BodyPresenceSensor) {
   bodyPresence.start();
 }
 
+
+//AOD setting
 if (display.aodAvailable) {
   // tell the system we support AOD
   display.aodAllowed = true;

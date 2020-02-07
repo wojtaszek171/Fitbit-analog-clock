@@ -1,23 +1,26 @@
 import * as messaging from "messaging";
 import { settingsStorage } from "settings";
-
-// var API_KEY = "1cf2c3eae1fe3846b909ba2dd067234e";
-const API_KEY = JSON.parse(settingsStorage.getItem("weatherApiKey")).name;
-                  
+           
 // Fetch the weather from OpenWeather
 function queryOpenWeather() {
+  const API_KEY = JSON.parse(settingsStorage.getItem("weatherApiKey")).name;
+
   const cityName = JSON.parse(settingsStorage.getItem("weatherCity")).name;
   const weatherEnabled = settingsStorage.getItem("enableWeather");
-
+  const updateEvery = JSON.parse(settingsStorage.getItem("updateEvery")).values[0].value;
+  
   let weather = {
     enabled: weatherEnabled,
     cityName: cityName,
     temperature: '',
     weatherElements: [],
-    fetchTime: ''
+    fetchTime: '',
+    updateEveryMinutes: null
   };
 
-  if (weatherEnabled === 'true') {
+  if (weatherEnabled === 'true' && API_KEY && cityName) {
+    console.log("REQUESTED WEATHER");
+
     const ENDPOINT = "https://api.openweathermap.org/data/2.5/weather" +
                     "?q=" + cityName +
                     "&units=metric";
@@ -28,6 +31,7 @@ function queryOpenWeather() {
           weather.temperature = data["main"]["temp"];
           weather.weatherElements = data["weather"];
           weather.fetchTime = data["dt"];
+          weather.updateEveryMinutes = updateEvery;
           // Send the weather data to the device          
           returnWeatherData(weather);
         });
@@ -66,13 +70,8 @@ messaging.peerSocket.onerror = function(err) {
 
 settingsStorage.onchange = function(evt) {
   switch (evt.key) {
-    case "weatherCity":
-      queryOpenWeather();
-      break;
-    case "enableWeather":
-      queryOpenWeather();
-      break;
     default:
+      queryOpenWeather();
       break;
   }
 }

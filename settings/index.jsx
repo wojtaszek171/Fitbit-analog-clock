@@ -9,6 +9,9 @@ function settingsComponent(props) {
           </Text>
         }
       >
+        <Text>
+          For working weather properly allow Fitbit app on your phone to work in background.
+        </Text>
         <Toggle
           label="Enable weather on clock face"
           settingsKey="enableWeather"
@@ -21,6 +24,16 @@ function settingsComponent(props) {
         <TextInput
           label="City to fetch (can not specify small town, use GPS)"
           settingsKey="weatherCity"
+          disabled={!(props.settings.enableWeather === "true")}
+        />
+        <Select
+          settingsKey="updateEvery"
+          label="Automatic update weather every:"
+          options={[
+            { name: '15 min', value: 15 },
+            { name: '30 min',  value: 30 },
+            { name: '60 min',value: 60 }
+          ]}
           disabled={!(props.settings.enableWeather === "true")}
         />
       </Section>
