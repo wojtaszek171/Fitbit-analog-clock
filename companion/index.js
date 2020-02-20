@@ -34,26 +34,16 @@ function queryOpenWeather() {
           weather.fetchTime = data["dt"];
           weather.updateEveryMinutes = updateEvery;
           // Send the weather data to the device          
-          returnWeatherData(weather);
+          messaging.peerSocket.send(weather);
         });
     })
     .catch(function (err) {
-      weather.error = "Failed loading weather.\nOpen Fitbit app on your phone.";
+      weather.error = "There is an error \n check you weather API key.";
+      messaging.peerSocket.send(weather);
     });
-  } else {
-    returnWeatherData(weather);
   }
 }
 
-// Send the weather data to the device
-function returnWeatherData(data) {
-  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-    // Send a command to the device    
-    messaging.peerSocket.send(data);
-  } else {
-    console.log("Error: Connection is not open");
-  }
-}
 
 // Listen for messages from the device
 messaging.peerSocket.onmessage = function(evt) {

@@ -29,6 +29,7 @@ const stepsText = document.getElementById("stepstext");
 const toastElement = document.getElementById("toastUse");
 const toastText =   document.getElementById("toastText");
 
+let toastTimeout = null;
 // Returns an angle (0-360) for the current hour in the day, including minutes
 function hoursToAngle(hours, minutes) {
   let hourAngle = (360 / 12) * hours;
@@ -71,13 +72,18 @@ function fetchWeather() {
     messaging.peerSocket.send({
       command: 'weather'
     });
+  } else {
+    displayToast("Failed loading weather.\nOpen Fitbit app on your phone.");
   }
 }
 
 const displayToast = (message) => {
   toastText.text = message;
   toastElement.animate("enable"); //show toast
-  setTimeout(() => { //wait a second showing message
+  if(toastTimeout !== null) {
+    clearTimeout(toastTimeout);
+  }
+  toastTimeout = setTimeout(() => { //wait a second showing message
     toastElement.animate("disable"); //hide toast
   }, 3000);
 }  
@@ -110,7 +116,7 @@ messaging.peerSocket.onmessage = function(evt) {
       }
       weatherInterval = setInterval(fetchWeather, Number(updateMinutes) * 1000 * 60);
     }
-    if (data.error) {
+    if (data.error !== null) {
       displayToast(data.error);
     }
   } else {
