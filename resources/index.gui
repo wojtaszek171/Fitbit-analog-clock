@@ -1,4 +1,16 @@
 <svg>
+  <defs>
+    <symbol id="toast">
+      <g>
+        <section x="0" y="100%">
+          <rect width="100%" height="50" fill="#ffffff" pointer-events="visible"/>
+          <textarea id="toastText" width="100%" height="50" text-anchor="middle" font-size="18" fill="#000000" text-length="100"></textarea>
+          <animate attributeName="y" begin="enable" from="100%" to="100%-45" dur="1"/>
+          <animate attributeName="y" begin="disable" from="100%-45" to="100%" dur="1"/>
+        </section>
+      </g>
+    </symbol>
+  </defs>
   <svg viewport-fill="#111111">
     <section x="20" y="40" height="36" width="100%">
       <g id='weather'>
@@ -29,17 +41,22 @@
     </section>
     <image x="0" y="0" width="100%" height="100%" href="hoursLayer8bit.png" />
     <image id="minutesLayer" x="0" y="0" width="100%" height="100%" href="minutesLayer8bit.png" />
+
     <g id="mins" pointer-events="visible" transform="translate(50%,50%)">
-      <line x1="0" y1="0" x2="0" y2="-40%" stroke-width="5" class="color1" fill="#e0e0e0" opacity="0.7"/>
+      <line x1="0" y1="0" x2="0" y2="-40%" stroke-width="5" fill="#e0e0e0" opacity="0.7"/>
     </g>
     <g id="hours" pointer-events="visible" transform="translate(50%,50%)">
-      <line x1="0" y1="0" x2="0" y2="-30%" stroke-width="8" class="color1" fill="#ffffff" opacity="0.7"/>
+      <line x1="0" y1="0" x2="0" y2="-30%" stroke-width="8" fill="#ffffff" opacity="0.7"/>
     </g>
     <g id="secs" transform="translate(50%,50%)">
-      <line x1="0" y1="8%" x2="0" y2="-45%+2" stroke-width="2" class="color1" fill="#ff0000" />
+      <line x1="0" y1="8%" x2="0" y2="-45%+2" stroke-width="2" fill="#ff0000" />
     </g>
     <circle cx="50%" cy="50%" r="8" fill="#ff0000" />
     <circle cx="50%" cy="50%" r="6" fill="#000000" />
   </svg>
-
+  <use id="toastUse" href="#toast"/>
+  <section x="0" y="0">
+    <image id="weatherButtonIcon" x="25" y="25" href="refresh.png" height="30" width="30" pointer-events="visible" fill="white"/>
+    <rect id="weatherButton" height="80" width="120" pointer-events="visible" opacity="0" fill="white"/>
+  </section>
 </svg>

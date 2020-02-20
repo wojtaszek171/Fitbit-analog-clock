@@ -3,9 +3,9 @@ import { settingsStorage } from "settings";
            
 // Fetch the weather from OpenWeather
 function queryOpenWeather() {
-  const API_KEY = JSON.parse(settingsStorage.getItem("weatherApiKey")).name;
+  const API_KEY = JSON.parse(settingsStorage.getItem("weatherApiKey")).name ? JSON.parse(settingsStorage.getItem("weatherApiKey")).name : '';
 
-  const cityName = JSON.parse(settingsStorage.getItem("weatherCity")).name;
+  const cityName = JSON.parse(settingsStorage.getItem("weatherCity")).name ? JSON.parse(settingsStorage.getItem("weatherCity")).name : '';
   const weatherEnabled = settingsStorage.getItem("enableWeather");
   const updateEvery = JSON.parse(settingsStorage.getItem("updateEvery")).values[0].value;
   
@@ -15,7 +15,8 @@ function queryOpenWeather() {
     temperature: '',
     weatherElements: [],
     fetchTime: '',
-    updateEveryMinutes: null
+    updateEveryMinutes: null,
+    error: null
   };
 
   if (weatherEnabled === 'true' && API_KEY && cityName) {
@@ -37,7 +38,7 @@ function queryOpenWeather() {
         });
     })
     .catch(function (err) {
-      console.log("Error fetching weather: " + err);
+      weather.error = "Failed loading weather.\nOpen Fitbit app on your phone.";
     });
   } else {
     returnWeatherData(weather);

@@ -15,26 +15,25 @@ const weatherInterval = null;
 // Update the clock every second
 clock.granularity = "seconds";
 
-let hourHand = document.getElementById("hours");
-let minHand = document.getElementById("mins");
-let secHand = document.getElementById("secs");
-let heartRateText = document.getElementById("heartratetext");
-let dateText = document.getElementById("dateText");
+const hourHand = document.getElementById("hours");
+const minHand = document.getElementById("mins");
+const secHand = document.getElementById("secs");
+const heartRateText = document.getElementById("heartratetext");
+const dateText = document.getElementById("dateText");
+const img = document.getElementById("weatherIcon");
+const cityname = document.getElementById("cityname");
+const degrees = document.getElementById("degrees");
+const reloadWeatherButton = document.getElementById("weatherButton");
+const weatherButtonIcon = document.getElementById("weatherButtonIcon");
+const stepsText = document.getElementById("stepstext");
+const toastElement = document.getElementById("toastUse");
+const toastText =   document.getElementById("toastText");
 
 // Returns an angle (0-360) for the current hour in the day, including minutes
 function hoursToAngle(hours, minutes) {
   let hourAngle = (360 / 12) * hours;
   let minAngle = (360 / 12 / 60) * minutes;
   return hourAngle + minAngle;
-}
-
-// Request weather data from the companion
-function fetchWeather() {
-  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-    messaging.peerSocket.send({
-      command: 'weather'
-    });
-  }
 }
 
 // Returns an angle (0-360) for minutes
@@ -53,7 +52,6 @@ function updateClock() {
   let hours = todayDate.getHours() % 12;
   let mins = todayDate.getMinutes();
   let secs = todayDate.getSeconds();
-  let stepsText = document.getElementById("stepstext");
 
   hourHand.groupTransform.rotate.angle = hoursToAngle(hours, mins);
   minHand.groupTransform.rotate.angle = minutesToAngle(mins);
@@ -63,31 +61,26 @@ function updateClock() {
   dateText.text = todayDate.getDate() + " " + monthNames[todayDate.getMonth()].substring(0, 3);
 }
 
-// Display the weather data received from the companion
-function processWeatherData(data) {
-  const enabled = data.enabled;
-  const updateMinutes = data.updateEveryMinutes ? data.updateEveryMinutes : 30;  
-  const img = document.getElementById("weatherIcon");
-  const cityname = document.getElementById("cityname");
-  const degrees = document.getElementById("degrees");
-  
-  if (enabled === 'true') {
-    const el = data.weatherElements[0];
-    cityname.text = data.cityName;
-    img.href = "weatherimages/"+el.icon+".png";
-    degrees.text = Math.round(data.temperature) + "°";
-    
-    // Fetch the weather every 30 minutes
-    if(weatherInterval !== null) {
-      clearInterval(weatherInterval);
-    }
-    weatherInterval = setInterval(fetchWeather, Number(updateMinutes) * 1000 * 60);
-  } else {
-    cityname.text = '';
-    img.href = '';
-    degrees.text = '';
+// Request weather data from the companion
+function fetchWeather() {
+  weatherButtonIcon.style.display = "inline";
+  cityname.text = '';
+  img.href = '';
+  degrees.text = '';
+  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+    messaging.peerSocket.send({
+      command: 'weather'
+    });
   }
 }
+
+const displayToast = (message) => {
+  toastText.text = message;
+  toastElement.animate("enable"); //show toast
+  setTimeout(() => { //wait a second showing message
+    toastElement.animate("disable"); //hide toast
+  }, 3000);
+}  
 
 // Update the clock every tick event
 clock.ontick = () => updateClock();
@@ -99,8 +92,33 @@ messaging.peerSocket.onopen = function() {
 
 // Listen for messages from the companion
 messaging.peerSocket.onmessage = function(evt) {
-  if (evt.data)  {
-    processWeatherData(evt.data);
+  const data = evt.data;
+  if (data.enabled === 'true')  {
+    reloadWeatherButton.style.display = "inline";
+    weatherButtonIcon.style.display = "inline"
+    const updateMinutes = data.updateEveryMinutes ? data.updateEveryMinutes : 30;  
+    if (data.temperature) {
+      const el = data.weatherElements[0];
+      cityname.text = data.cityName;
+      img.href = "weatherimages/"+el.icon+".png";
+      degrees.text = Math.round(data.temperature) + "°";
+      weatherButtonIcon.style.display = "none";
+  
+      // Fetch the weather every 30 minutes
+      if(weatherInterval !== null) {
+        clearInterval(weatherInterval);
+      }
+      weatherInterval = setInterval(fetchWeather, Number(updateMinutes) * 1000 * 60);
+    }
+    if (data.error) {
+      displayToast(data.error);
+    }
+  } else {
+    reloadWeatherButton.style.display = "none";
+    weatherButtonIcon.style.display = "none"
+    cityname.text = '';
+    img.href = '';
+    degrees.text = '';
   }
 }
 
@@ -171,4 +189,8 @@ if (display.aodAvailable) {
       bodyPresence.stop();
     }
   });
+}
+
+reloadWeatherButton.onclick = function(evt) {
+  fetchWeather();
 }
