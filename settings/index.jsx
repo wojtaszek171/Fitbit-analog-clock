@@ -24,10 +24,15 @@ function settingsComponent(props) {
           settingsKey="weatherApiKey"
           disabled={!(props.settings.enableWeather === "true")}
         />
+        <Toggle
+          label="Use GPS"
+          settingsKey="gpsEnabled"
+          disabled={!(props.settings.enableWeather === "true")}
+        />
         <TextInput
           label="City to fetch (can not specify small town, use GPS)"
           settingsKey="weatherCity"
-          disabled={!(props.settings.enableWeather === "true")}
+          disabled={(!(props.settings.enableWeather === "true") || props.settings.gpsEnabled === "true")}
         />
         <Select
           settingsKey="updateEvery"

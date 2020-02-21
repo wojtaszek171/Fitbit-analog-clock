@@ -1,14 +1,15 @@
 import * as messaging from "messaging";
 import { settingsStorage } from "settings";
-           
+import { geolocation } from "geolocation";
+
 // Fetch the weather from OpenWeather
 function queryOpenWeather() {
   const API_KEY = JSON.parse(settingsStorage.getItem("weatherApiKey")).name ? JSON.parse(settingsStorage.getItem("weatherApiKey")).name : '';
 
-  const cityName = JSON.parse(settingsStorage.getItem("weatherCity")).name ? JSON.parse(settingsStorage.getItem("weatherCity")).name : '';
+  let cityName = JSON.parse(settingsStorage.getItem("weatherCity")).name ? JSON.parse(settingsStorage.getItem("weatherCity")).name : '';
   const weatherEnabled = settingsStorage.getItem("enableWeather");
-  const updateEvery = JSON.parse(settingsStorage.getItem("updateEvery")).values[0].value;
-  
+  const gpsEnabled = settingsStorage.getItem("gpsEnabled");
+
   let weather = {
     enabled: weatherEnabled,
     cityName: cityName,
@@ -19,31 +20,52 @@ function queryOpenWeather() {
     error: null
   };
 
-  if (weatherEnabled === 'true' && API_KEY && cityName) {
-    console.log("REQUESTED WEATHER");
+  if (weatherEnabled === 'true' && API_KEY && (cityName || gpsEnabled === 'true')) {
+    let ENDPOINT = "https://api.openweathermap.org/data/2.5/weather" +
+                    "?units=metric";
+    if (gpsEnabled === 'true') {      
+      geolocation.getCurrentPosition((position) => {
+        ENDPOINT += "&lat="+ position.coords.latitude +"&lon=" + position.coords.longitude;
 
-    const ENDPOINT = "https://api.openweathermap.org/data/2.5/weather" +
-                    "?q=" + cityName +
-                    "&units=metric";
-    fetch(ENDPOINT + "&APPID=" + API_KEY)
-    .then(function (response) {
-        response.json()
-        .then(function(data) {
-          weather.temperature = data["main"]["temp"];
-          weather.weatherElements = data["weather"];
-          weather.fetchTime = data["dt"];
-          weather.updateEveryMinutes = updateEvery;
-          // Send the weather data to the device          
-          messaging.peerSocket.send(weather);
-        });
-    })
-    .catch(function (err) {
-      weather.error = "There is an error \n check you weather API key.";
-      messaging.peerSocket.send(weather);
-    });
+        fetchWeather(ENDPOINT, API_KEY, weather);
+      },
+      (error) => {
+        weather.error = "Failed to use gps";
+        messaging.peerSocket.send(weather);
+      }, {
+        timeout: 60 * 1000
+      });
+
+    } else {
+      ENDPOINT += "&q=" + cityName;
+      fetchWeather(ENDPOINT, API_KEY, weather);
+    }
   }
 }
 
+const fetchWeather = (ENDPOINT, API_KEY, weather) => {
+  const updateEvery = JSON.parse(settingsStorage.getItem("updateEvery")).values[0].value;
+
+  fetch(ENDPOINT + "&APPID=" + API_KEY)
+  .then(function (response) {
+      response.json()
+      .then(function(data) {                
+        weather.temperature = data["main"]["temp"];
+        weather.weatherElements = data["weather"];
+        weather.fetchTime = data["dt"];
+        weather.updateEveryMinutes = updateEvery;
+        if (data["name"]) {
+          weather.cityName = data["name"];
+        }
+        // Send the weather data to the device          
+        messaging.peerSocket.send(weather);
+      });
+  })
+  .catch(function (err) {
+    weather.error = "There is an error. Check your weather API key and Internet connection.";
+    messaging.peerSocket.send(weather);
+  });
+};
 
 // Listen for messages from the device
 messaging.peerSocket.onmessage = function(evt) {

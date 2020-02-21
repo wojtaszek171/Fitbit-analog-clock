@@ -73,7 +73,7 @@ function fetchWeather() {
       command: 'weather'
     });
   } else {
-    displayToast("Failed loading weather.\nOpen Fitbit app on your phone.");
+    displayToast("Failed loading weather. Open Fitbit app on your phone.");
   }
 }
 
@@ -198,5 +198,6 @@ if (display.aodAvailable) {
 }
 
 reloadWeatherButton.onclick = function(evt) {
+  weatherButtonIcon.animate('enable');
   fetchWeather();
 }

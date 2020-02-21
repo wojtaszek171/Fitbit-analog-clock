@@ -56,7 +56,12 @@
   </svg>
   <use id="toastUse" href="#toast"/>
   <section x="0" y="0">
-    <image id="weatherButtonIcon" x="25" y="25" href="refresh.png" height="30" width="30" pointer-events="visible" fill="white"/>
+    <svg x="25" y="25" height="30" width="30">
+      <g id="weatherButtonIcon" transform="rotate(180)" transform="translate(50%,50%)">
+        <image id="weatherButtonIcon" x="$-15" y="$-15" href="refresh.png" height="30" width="30" pointer-events="visible" fill="white"/>
+        <animateTransform attributeType="rotate" from="0" to="360" begin="enable" dur="2" />
+      </g>
+    </svg>
     <rect id="weatherButton" height="80" width="120" pointer-events="visible" opacity="0" fill="white"/>
   </section>
 </svg>

@@ -17,6 +17,8 @@
       "access_heart_rate",
       "access_activity",
       "access_internet",
+      "access_location",
+      "run_background",
       "access_aod"
     ],
     "buildTargets": [
