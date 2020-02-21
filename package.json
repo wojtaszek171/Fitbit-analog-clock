@@ -18,8 +18,7 @@
       "access_activity",
       "access_internet",
       "access_location",
-      "run_background",
-      "access_aod"
+      "run_background"
     ],
     "buildTargets": [
       "higgs",

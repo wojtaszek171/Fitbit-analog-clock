@@ -40,6 +40,8 @@ function queryOpenWeather() {
       ENDPOINT += "&q=" + cityName;
       fetchWeather(ENDPOINT, API_KEY, weather);
     }
+  } else {
+    messaging.peerSocket.send(weather);
   }
 }
 

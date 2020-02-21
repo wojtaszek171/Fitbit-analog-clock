@@ -13,7 +13,10 @@ function settingsComponent(props) {
           For working weather properly allow Fitbit app on your phone to work in background.
         </Text>
         <Text>
-          You can refresh weather by tapping current weather on clock face.
+          Tap screen to refresh weather.
+        </Text>
+        <Text>
+          Tap displayed weather to show details about weather for 5 days.
         </Text>
         <Toggle
           label="Enable weather on clock face"

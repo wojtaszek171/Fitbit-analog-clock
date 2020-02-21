@@ -23,13 +23,18 @@ const dateText = document.getElementById("dateText");
 const img = document.getElementById("weatherIcon");
 const cityname = document.getElementById("cityname");
 const degrees = document.getElementById("degrees");
-const reloadWeatherButton = document.getElementById("weatherButton");
+const reloadWeatherButton = document.getElementById("weatherRefreshButton");
+const weatherButton = document.getElementById("weatherButton");
 const weatherButtonIcon = document.getElementById("weatherButtonIcon");
 const stepsText = document.getElementById("stepstext");
 const toastElement = document.getElementById("toastUse");
 const toastText =   document.getElementById("toastText");
+const goToClockButton = document.getElementById("goToClockButton");
+const weatherView = document.getElementById("weatherView");
 
 let toastTimeout = null;
+let container = document.getElementById("container");
+
 // Returns an angle (0-360) for the current hour in the day, including minutes
 function hoursToAngle(hours, minutes) {
   let hourAngle = (360 / 12) * hours;
@@ -99,9 +104,13 @@ messaging.peerSocket.onopen = function() {
 // Listen for messages from the companion
 messaging.peerSocket.onmessage = function(evt) {
   const data = evt.data;
+  console.log(data.enabled);
+  
   if (data.enabled === 'true')  {
+    weatherView.style.display = "inline";
     reloadWeatherButton.style.display = "inline";
-    weatherButtonIcon.style.display = "inline"
+    weatherButton.style.display = "inline";
+    weatherButtonIcon.style.display = "inline";
     const updateMinutes = data.updateEveryMinutes ? data.updateEveryMinutes : 30;  
     if (data.temperature) {
       const el = data.weatherElements[0];
@@ -120,8 +129,10 @@ messaging.peerSocket.onmessage = function(evt) {
       displayToast(data.error);
     }
   } else {
+    weatherView.style.display = "none";
     reloadWeatherButton.style.display = "none";
-    weatherButtonIcon.style.display = "none"
+    weatherButton.style.display = "none";
+    weatherButtonIcon.style.display = "none";
     cityname.text = '';
     img.href = '';
     degrees.text = '';
@@ -174,6 +185,7 @@ if (display.aodAvailable) {
   display.addEventListener("change", () => {
     // Is AOD inactive and the display is on?
     if (!display.aodActive && display.on) {
+      container.value = 0;
       clock.granularity = "seconds";
       secHand.style.display = "inline";
       weatherSection.style.display = "inline";
@@ -197,7 +209,20 @@ if (display.aodAvailable) {
   });
 }
 
-reloadWeatherButton.onclick = function(evt) {
+reloadWeatherButton.onclick = (evt) => {
   weatherButtonIcon.animate('enable');
   fetchWeather();
+}
+
+weatherButton.onclick = (evt) => {
+  if (weatherButtonIcon.style.display === "inline"){
+    weatherButtonIcon.animate('enable');
+    fetchWeather();
+  } else {
+    container.value = 1;
+  }
+}
+
+goToClockButton.onclick = (evt) => {
+  container.value = 0;
 }
