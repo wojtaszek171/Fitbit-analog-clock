@@ -70,6 +70,7 @@ function updateClock() {
 // Request weather data from the companion
 function fetchWeather() {
   weatherButtonIcon.style.display = "inline";
+  weatherButtonIcon.animate('enable');
   cityname.text = '';
   img.href = '';
   degrees.text = '';
@@ -104,7 +105,6 @@ messaging.peerSocket.onopen = function() {
 // Listen for messages from the companion
 messaging.peerSocket.onmessage = function(evt) {
   const data = evt.data;
-  console.log(data.enabled);
   
   if (data.enabled === 'true')  {
     weatherView.style.display = "inline";
@@ -210,13 +210,11 @@ if (display.aodAvailable) {
 }
 
 reloadWeatherButton.onclick = (evt) => {
-  weatherButtonIcon.animate('enable');
   fetchWeather();
 }
 
 weatherButton.onclick = (evt) => {
   if (weatherButtonIcon.style.display === "inline"){
-    weatherButtonIcon.animate('enable');
     fetchWeather();
   } else {
     container.value = 1;

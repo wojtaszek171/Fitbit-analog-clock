@@ -1,10 +1,11 @@
 <svg>
   <defs>
-      <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css" />
     <link rel="import" href="/mnt/sysassets/widgets_common.gui" />
     <!-- Additional Imports -->
     <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/panoramaview_widget.gui" />
+    <link rel="import" href="/mnt/sysassets/widgets/scrollview_widget.gui" />
     <symbol id="toast">
       <g>
         <section x="0" y="100%">
@@ -14,6 +15,11 @@
           <animate attributeName="y" begin="disable" from="100%-45" to="100%" dur="1"/>
         </section>
       </g>
+    </symbol>
+        <symbol id="view-header" href="#scrollview-header">
+      <rect fill="inherit" x="0" y="0" width="100%" height="100%"/>
+      <text id="text" x="5" y="50%+10" fill="black" font-size="30"
+        font-weight="bold" />
     </symbol>
   </defs>
   <use id="container" href="#panoramaview">
@@ -67,7 +73,7 @@
         <svg x="25" y="25" height="30" width="30">
           <g id="weatherButtonIcon" transform="rotate(180)" transform="translate(50%,50%)">
             <image id="weatherButtonIcon" x="$-15" y="$-15" href="refresh.png" height="30" width="30" pointer-events="visible" fill="white"/>
-            <animateTransform attributeType="rotate" from="0" to="360" begin="enable" dur="2" />
+            <animateTransform attributeType="rotate" from="0" to="1080" begin="enable" dur="4" />
           </g>
         </svg>
         <rect id="weatherButton" height="80" width="120" pointer-events="visible" opacity="0" fill="white"/>
@@ -75,9 +81,29 @@
     </use>
     <use id="weatherView" href="#panoramaview-item">
       <svg viewport-fill="#111111">
-        <rect id="goToClockButton" height="80" width="120" pointer-events="visible" opacity="0" fill="white">
-          <image width="60" height="60" href="goback.png" fill="#ffffff"/>
-        </rect>
+        <use href="#scrollview">
+          <use href="#view-header" height="60">
+            <rect id="goToClockButton" width="120" pointer-events="visible" opacity="0" fill="white">
+              <image width="60" height="60" href="goback.png"/>
+              <text id="detailsCityName"></text>
+            </rect>
+          </use>
+          <use href="#scrollview-item" height="80">
+            <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
+          </use>
+          <use href="#scrollview-item" height="80">
+            <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
+          </use>
+          <use href="#scrollview-item" height="80">
+            <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
+          </use>
+          <use href="#scrollview-item" height="80">
+            <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
+          </use>
+          <use href="#scrollview-item" height="80">
+            <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
+          </use>
+        </use>
       </svg>
     </use>
   </use>
