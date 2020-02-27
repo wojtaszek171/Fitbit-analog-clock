@@ -13,7 +13,7 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
 ];
 const daysNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const dateText = document.getElementById("dateText");
-const img = document.getElementById("weatherIcon");
+const weatherIcon = document.getElementById("weatherIcon");
 const cityname = document.getElementById("cityname").getElementById('text');
 const degrees = document.getElementById("degrees");
 const reloadWeatherButton = document.getElementById("weatherRefreshButton");
@@ -101,7 +101,7 @@ const fetchTodayWeather = () => {
   weatherButtonIcon.style.display = "inline";
   weatherButtonIcon.animate('enable');
   cityname.text = '';
-  img.href = '';
+  weatherIcon.href = '';
   degrees.text = '';
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
     messaging.peerSocket.send({
@@ -157,7 +157,7 @@ const setWeatherListener = () => {
             const el = data.weatherElement;
             cityname.text = data.cityName;
             document.getElementById('customTextarea');
-            img.href = "weatherimages/"+el.icon+".png";
+            weatherIcon.href = "weatherimages/"+el.icon+".png";
             degrees.text = Math.round(data.temperature) + "°";
             weatherButtonIcon.style.display = "none";
             if(weatherInterval !== null) {
@@ -239,7 +239,7 @@ const setButtonsListeners = () => {
   weatherButton.onclick = () => {
     if (weatherButtonIcon.style.display === "inline"){
       fetchTodayWeather();
-    } else {
+    } else if (weatherIcon.href.length){
       fetch5daysWeather();
       container.value = 1;
     }
