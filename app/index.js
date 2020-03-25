@@ -147,7 +147,7 @@ const setWeatherListener = () => {
     const data = evt.data;
     switch (data.command) {
       case 'todayWeather':
-        if (data.enabled === 'true')  {
+        if (data.enabled === 'true' && data.hasApi)  {          
           weatherView.style.display = "inline";
           reloadWeatherButton.style.display = "inline";
           weatherButton.style.display = "inline";
@@ -174,7 +174,6 @@ const setWeatherListener = () => {
           weatherButton.style.display = "none";
           weatherButtonIcon.style.display = "none";
           cityname.text = '';
-          img.href = '';
           degrees.text = '';
         }
         break;

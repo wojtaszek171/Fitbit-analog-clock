@@ -3,15 +3,18 @@ import { settingsStorage } from "settings";
 import { geolocation } from "geolocation";
 
 const queryTodayOpenWeather = () => {
-  const API_KEY = JSON.parse(settingsStorage.getItem("weatherApiKey")).name ? JSON.parse(settingsStorage.getItem("weatherApiKey")).name : '';
+  const weatherApiSetting = JSON.parse(settingsStorage.getItem("weatherApiKey"));
+  const API_KEY = weatherApiSetting ? weatherApiSetting.name : '';
 
-  let cityName = JSON.parse(settingsStorage.getItem("weatherCity")).name ? JSON.parse(settingsStorage.getItem("weatherCity")).name : '';
+  const weatherCitySetting = JSON.parse(settingsStorage.getItem("weatherCity"));
+  let cityName = weatherCitySetting ? weatherCitySetting.name : '';
   const weatherEnabled = settingsStorage.getItem("enableWeather");
   const gpsEnabled = settingsStorage.getItem("gpsEnabled");
 
   let weather = {
     command: 'todayWeather',
     enabled: weatherEnabled,
+    hasApi: API_KEY.length > 0,
     cityName: '',
     temperature: '',
     weatherElement: {},
@@ -45,8 +48,9 @@ const queryTodayOpenWeather = () => {
 }
 
 const fetchTodayWeather = (ENDPOINT, API_KEY, weather) => {
-  const updateEvery = JSON.parse(settingsStorage.getItem("updateEvery")).values[0].value;
-
+  const updateEverySetting = JSON.parse(settingsStorage.getItem("updateEvery"));
+  const updateEvery = updateEverySetting ? updateEverySetting.values[0].value : 30;
+  
   fetch(ENDPOINT + "&APPID=" + API_KEY)
   .then((response) => {
       response.json()
@@ -72,7 +76,8 @@ const fetchTodayWeather = (ENDPOINT, API_KEY, weather) => {
 const query5daysOpenWeather = () => {
   const API_KEY = JSON.parse(settingsStorage.getItem("weatherApiKey")).name ? JSON.parse(settingsStorage.getItem("weatherApiKey")).name : '';
 
-  let cityName = JSON.parse(settingsStorage.getItem("weatherCity")).name ? JSON.parse(settingsStorage.getItem("weatherCity")).name : '';
+  const cityNameSetting = JSON.parse(settingsStorage.getItem("weatherCity"));
+  let cityName = cityNameSetting ? cityNameSetting.name : '';
   const weatherEnabled = settingsStorage.getItem("enableWeather");
   const gpsEnabled = settingsStorage.getItem("gpsEnabled");
 

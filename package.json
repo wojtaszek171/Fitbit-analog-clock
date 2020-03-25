@@ -1,5 +1,5 @@
 {
-  "name": "clock",
+  "name": "weather_clock",
   "version": "0.1.0",
   "private": true,
   "license": "UNLICENSED",
@@ -10,7 +10,7 @@
   "fitbit": {
     "appUUID": "23d4f478-759a-491b-84d8-efd66c83f230",
     "appType": "clockface",
-    "appDisplayName": "Clock",
+    "appDisplayName": "Weather Clock",
     "iconFile": "resources/icon.png",
     "wipeColor": "#ffffff",
     "requestedPermissions": [
@@ -21,9 +21,6 @@
       "run_background"
     ],
     "buildTargets": [
-      "higgs",
-      "meson",
-      "gemini",
       "mira"
     ],
     "i18n": {},
