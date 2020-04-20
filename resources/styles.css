@@ -40,14 +40,14 @@
 #rowWeatherDegrees {
   fill: "#ffffff";
   font-size: "20";
-  text-length: 4;
+  text-length: 5;
   text-anchor: middle;
 }
 
 #degrees {
   font-size: "20";
   font-weight: bold;
-  text-length: 4;
+  text-length: 5;
   fill: "#ffffff";
 }
 

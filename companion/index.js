@@ -1,5 +1,5 @@
 import * as messaging from "messaging";
-import { settingsStorage } from "settings";
+import settings, { settingsStorage } from "settings";
 import { geolocation } from "geolocation";
 
 const queryTodayOpenWeather = () => {
@@ -10,6 +10,7 @@ const queryTodayOpenWeather = () => {
   let cityName = weatherCitySetting ? weatherCitySetting.name : '';
   const weatherEnabled = settingsStorage.getItem("enableWeather");
   const gpsEnabled = settingsStorage.getItem("gpsEnabled");
+  const temperatureUnit = JSON.parse(settingsStorage.getItem("temperatureUnit"));
 
   let weather = {
     command: 'todayWeather',
@@ -19,12 +20,27 @@ const queryTodayOpenWeather = () => {
     temperature: '',
     weatherElement: {},
     updateEveryMinutes: null,
-    error: null
+    error: null,
+    temperatureUnit: temperatureUnit ? temperatureUnit.values[0].value : 2
   };
 
   if (weatherEnabled === 'true' && API_KEY && (cityName || gpsEnabled === 'true')) {
-    let ENDPOINT = "https://api.openweathermap.org/data/2.5/weather" +
-                    "?units=metric";
+    let ENDPOINT = "https://api.openweathermap.org/data/2.5/weather";
+        
+    switch (temperatureUnit ? temperatureUnit.values[0].value : 2) {
+      case 0:
+        ENDPOINT += "?units=imperial";
+        break;
+      case 1:
+        ENDPOINT += "?units=standard";
+        break;
+      case 2:
+        ENDPOINT += "?units=metric";
+        break;
+      default:
+        break;
+    }
+
     if (gpsEnabled === 'true') {      
       geolocation.getCurrentPosition((position) => {
         ENDPOINT += "&lat="+ position.coords.latitude +"&lon=" + position.coords.longitude;
@@ -80,17 +96,33 @@ const query5daysOpenWeather = () => {
   let cityName = cityNameSetting ? cityNameSetting.name : '';
   const weatherEnabled = settingsStorage.getItem("enableWeather");
   const gpsEnabled = settingsStorage.getItem("gpsEnabled");
+  const temperatureUnit = JSON.parse(settingsStorage.getItem("temperatureUnit"));
 
   let message = {
     command: 'forecastWeather',
     enabled: weatherEnabled,
     cityName: '',
-    error: null
+    error: null,
+    temperatureUnit: temperatureUnit ? temperatureUnit.values[0].value : 2
   };
 
   if (weatherEnabled === 'true' && API_KEY && (cityName || gpsEnabled === 'true')) {
-    let ENDPOINT = "https://api.openweathermap.org/data/2.5/forecast" +
-                    "?units=metric";
+    let ENDPOINT = "https://api.openweathermap.org/data/2.5/forecast";
+
+    switch (temperatureUnit ? temperatureUnit.values[0].value : 2) {
+      case 0:
+        ENDPOINT += "?units=imperial";
+        break;
+      case 1:
+        ENDPOINT += "?units=standard";
+        break;
+      case 2:
+        ENDPOINT += "?units=metric";
+        break;
+      default:
+        break;
+    }
+                    
     if (gpsEnabled === 'true') {      
       geolocation.getCurrentPosition((position) => {
         ENDPOINT += "&lat="+ position.coords.latitude +"&lon=" + position.coords.longitude;
@@ -115,6 +147,8 @@ const query5daysOpenWeather = () => {
 
 const fetch5daysWeather = (ENDPOINT, API_KEY, message) => {
   let weatherDaysMessage = [];
+  const temperatureUnit = JSON.parse(settingsStorage.getItem("temperatureUnit"));
+
   fetch(ENDPOINT + "&APPID=" + API_KEY)
   .then((response) => {
       response.json()
@@ -151,7 +185,8 @@ const fetch5daysWeather = (ENDPOINT, API_KEY, message) => {
           messaging.peerSocket.send({
             svgElement: (i+1).toString(),
             command: 'forecastWeather',
-            weatherDayMessage
+            weatherDayMessage,
+            temperatureUnit: temperatureUnit ? temperatureUnit.values[0].value : 2
           });
         });
       });

@@ -177,7 +177,7 @@ const setWeatherListener = () => {
           degrees.text = '';
         }
         break;
-      case 'forecastWeather':
+      case 'forecastWeather':        
         if (data.enabled === 'true')  {
           detailsCityName.text = data.cityName;
         }
@@ -188,7 +188,25 @@ const setWeatherListener = () => {
           svgElement.getElementById("dayName").text = daysNames[messages[0].day];
           messages.slice().reverse().forEach((hourWeather, i) => {
             const hourElement = svgElement.getElementById("hour"+i);
-            hourElement.getElementById("rowWeatherDegrees").text = Math.round(hourWeather.temperature) + "°";
+            const temperatureElement = hourElement.getElementById("rowWeatherDegrees");            
+            const unit = data.temperatureUnit;
+            
+            switch (unit) {
+              case 0:
+                temperatureElement.style.fontSize = 16;
+              break;
+              case 1:
+                temperatureElement.style.fontSize = 16;
+                break;
+              case 2:
+                temperatureElement.style.fontSize = 20;
+                break;
+              default:
+                break;
+            }
+    
+            temperatureElement.text = Math.round(hourWeather.temperature) + "°";
+
             if(preferences.clockDisplay === '24h'){
               hourElement.getElementById("rowWeatherTime").text = hourWeather.hour + ":00";
             } else {
