@@ -105,7 +105,8 @@
             <animateTransform attributeType="rotate" from="0" to="1080" begin="enable" dur="4" />
           </g>
         </svg>
-        <rect id="weatherButton" height="80" width="120" pointer-events="visible" opacity="0" fill="#ffffff"/>
+        <rect id="weatherButton" height="80" width="120" pointer-events="visible" opacity="0.7" fill="#ffffff"/>
+        <rect y="$-80" x="100%-120" id="showStatsButton" height="80" width="120" pointer-events="visible" opacity="0.5" fill="red"/>
       </section>
     </use>
     <use id="weatherView" href="#panoramaview-item">

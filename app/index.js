@@ -18,6 +18,7 @@ const cityname = document.getElementById("cityname").getElementById('text');
 const degrees = document.getElementById("degrees");
 const reloadWeatherButton = document.getElementById("weatherRefreshButton");
 const weatherButton = document.getElementById("weatherButton");
+const statsButton = document.getElementById("showStatsButton");
 const weatherButtonIcon = document.getElementById("weatherButtonIcon");
 const stepsText = document.getElementById("stepstext");
 const toastElement = document.getElementById("toastUse");
@@ -242,6 +243,10 @@ const setButtonsListeners = () => {
       fetch5daysWeather();
       container.value = 1;
     }
+  }
+
+  statsButton.onclick = () => {
+    //stats button click
   }
   
   goToClockButton.onclick = () => {

@@ -18,7 +18,8 @@
       "access_activity",
       "access_internet",
       "access_location",
-      "run_background"
+      "run_background",
+      "access_aod"
     ],
     "buildTargets": [
       "mira"
