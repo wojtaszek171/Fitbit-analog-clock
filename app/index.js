@@ -22,6 +22,7 @@ const statsButton = document.getElementById("showStatsButton");
 const weatherButtonIcon = document.getElementById("weatherButtonIcon");
 const stepsText = document.getElementById("stepstext");
 const toastElement = document.getElementById("toastUse");
+const statsDetailsElement = document.getElementById("statsDetailsUse");
 const toastText =   document.getElementById("toastText");
 const goToClockButton = document.getElementById("goToClockButton");
 const weatherView = document.getElementById("weatherView");
@@ -34,6 +35,7 @@ let hrm = null; //heart rate sensor data
 let bodyPresence = null; //body presence sensor data
 
 let toastTimeout = null;
+let statsDetailsTimeout = null;
 let container = document.getElementById("container");
 
 const hoursToAngle = (hours, minutes) => {
@@ -132,7 +134,17 @@ const displayToast = (message) => {
   toastTimeout = setTimeout(() => { //wait a second showing message
     toastElement.animate("disable"); //hide toast
   }, 3000);
-}  
+}
+
+const displayStatsDetails = () => {
+  statsDetailsElement.animate("enable"); //show
+  if(statsDetailsTimeout !== null) {
+    clearTimeout(statsDetailsTimeout);
+  }
+  statsDetailsTimeout = setTimeout(() => { //wait
+    statsDetailsElement.animate("disable"); //hide
+  }, 3000);
+}
 
 const setWeatherListener = () => {
   messaging.peerSocket.onopen = () => {
@@ -264,7 +276,7 @@ const setButtonsListeners = () => {
   }
 
   statsButton.onclick = () => {
-    //stats button click
+    displayStatsDetails();
   }
   
   goToClockButton.onclick = () => {
