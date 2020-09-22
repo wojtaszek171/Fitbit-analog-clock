@@ -27,6 +27,16 @@ function settingsComponent(props) {
           settingsKey="weatherApiKey"
           disabled={!(props.settings.enableWeather === "true")}
         />
+        <Select
+          settingsKey="temperatureUnit"
+          label="Temperature unit:"
+          options={[
+            { name: '°F', value: 0 },
+            { name: '°K', value: 1 },
+            { name: '°C', value: 2 }
+          ]}
+          disabled={!(props.settings.enableWeather === "true")}
+        />
         <Toggle
           label="Use GPS"
           settingsKey="gpsEnabled"
