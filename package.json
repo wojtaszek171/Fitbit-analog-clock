@@ -1,6 +1,6 @@
 {
   "name": "weather_clock",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "private": true,
   "license": "UNLICENSED",
   "devDependencies": {
@@ -8,7 +8,7 @@
     "@fitbit/sdk-cli": "^1.7.3"
   },
   "fitbit": {
-    "appUUID": "23d4f478-759a-491b-84d8-efd66c83f230",
+    "appUUID": "0b0822d1-5878-47a1-8440-1cfe25107ef2",
     "appType": "clockface",
     "appDisplayName": "Weather Clock",
     "iconFile": "resources/icon.png",

@@ -18,6 +18,9 @@ function settingsComponent(props) {
         <Text>
           Tap displayed weather to show details about weather for 5 days.
         </Text>
+        <Text>
+          Tap steps icon to show all stats.
+        </Text>
         <Toggle
           label="Enable weather on clock face"
           settingsKey="enableWeather"
