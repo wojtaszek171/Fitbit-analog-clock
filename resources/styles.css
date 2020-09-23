@@ -82,3 +82,24 @@
   text-anchor: middle;
   text-length: 32;
 }
+
+#statsDetails {
+  fill: '#000000';
+}
+
+.statsText {
+  fill: "#ffffff";
+  font-size: 20;
+  font-weight: bold;
+  width: 100%;
+  text-anchor: middle;
+  text-length: 9;
+}
+
+.whiteImage {
+  fill: "#ffffff";
+}
+
+.statsRow {
+  height: 40;
+}

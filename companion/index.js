@@ -1,5 +1,5 @@
 import * as messaging from "messaging";
-import settings, { settingsStorage } from "settings";
+import { settingsStorage } from "settings";
 import { geolocation } from "geolocation";
 
 const queryTodayOpenWeather = () => {

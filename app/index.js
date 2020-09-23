@@ -137,12 +137,30 @@ const displayToast = (message) => {
 }
 
 const displayStatsDetails = () => {
+  const statSteps = document.getElementById("statsSteps");
+  const statCals = document.getElementById("statsCals");
+  const statDist = document.getElementById("statsDist");
+  const statHr = document.getElementById("statsHr");
+  const statAzm = document.getElementById("statsAzm");
+  const statFloors = document.getElementById("statsFloors");
+
+  statSteps.text = today.adjusted.steps || "-";
+  statCals.text = today.adjusted.calories || "-";
+  statDist.text = today.adjusted.distance || "-";
+  statHr.text = (hrm && bodyPresence.present) ? hrm.heartRate : "-";
+  statAzm.text = today.adjusted.activeZoneMinutes || "-";
+  statFloors.text = today.adjusted.elevationGain || "-";
+
+  statsDetailsElement.style.display = "inline";
   statsDetailsElement.animate("enable"); //show
   if(statsDetailsTimeout !== null) {
     clearTimeout(statsDetailsTimeout);
   }
   statsDetailsTimeout = setTimeout(() => { //wait
     statsDetailsElement.animate("disable"); //hide
+    setTimeout(() => {
+      statsDetailsElement.style.display = "none";
+    }, 1000);
   }, 3000);
 }
 
