@@ -23,27 +23,27 @@
           <section height="100%" width="110" x="10" y="10">
             <section class="statsRow" x="0%" y="$">
               <image class="whiteImage" height="30" width="30" href="statsimages/steps.png" />
-              <text x="50%+15" y="50%+3" class="statsText" id="statsSteps">-</text>
+              <text x="50%+15" y="22" class="statsText" id="statsSteps">-</text>
             </section>
             <section class="statsRow" x="0%" y="$">
               <image class="whiteImage" height="30" width="30" href="statsimages/cals.png" />
-              <text x="50%+15" y="50%+3" class="statsText" id="statsCals">-</text>
+              <text x="50%+15" y="22" class="statsText" id="statsCals">-</text>
             </section>
             <section class="statsRow" x="0%" y="$">
               <image class="whiteImage" height="30" width="30" href="statsimages/dist.png" />
-              <text x="50%+15" y="50%+3" class="statsText" id="statsDist">-</text>
+              <text x="50%+15" y="22" class="statsText" id="statsDist">-</text>
             </section>
             <section class="statsRow" x="0%" y="$">
               <image class="whiteImage" height="30" width="30" href="statsimages/hr.png" />
-              <text x="50%+15" y="50%+3" class="statsText" id="statsHr">-</text>
+              <text x="50%+15" y="22" class="statsText" id="statsHr">-</text>
             </section>
             <section class="statsRow" x="0%" y="$">
               <image class="whiteImage" height="30" width="30" href="statsimages/azm.png" />
-              <text x="50%+15" y="50%+3" class="statsText" id="statsAzm">-</text>
+              <text x="50%+15" y="22" class="statsText" id="statsAzm">-</text>
             </section>
             <section class="statsRow" x="0%" y="$">
               <image class="whiteImage" height="30" width="30" href="statsimages/floors.png" />
-              <text x="50%+15" y="50%+3" class="statsText" id="statsFloors">-</text>
+              <text x="50%+15" y="22" class="statsText" id="statsFloors">-</text>
             </section>
           </section>
           <animate attributeName="x" begin="enable" from="100%" to="100%-130" dur="1"/>

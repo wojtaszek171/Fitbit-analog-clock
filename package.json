@@ -4,8 +4,8 @@
   "private": true,
   "license": "UNLICENSED",
   "devDependencies": {
-    "@fitbit/sdk": "~4.1.0",
-    "@fitbit/sdk-cli": "^1.7.1"
+    "@fitbit/sdk": "^4.2.1",
+    "@fitbit/sdk-cli": "^1.7.3"
   },
   "fitbit": {
     "appUUID": "23d4f478-759a-491b-84d8-efd66c83f230",
@@ -18,8 +18,7 @@
       "access_activity",
       "access_internet",
       "access_location",
-      "run_background",
-      "access_aod"
+      "run_background"
     ],
     "buildTargets": [
       "mira"
