@@ -144,12 +144,12 @@ const displayStatsDetails = () => {
   const statAzm = document.getElementById("statsAzm");
   const statFloors = document.getElementById("statsFloors");
 
-  statSteps.text = today.adjusted.steps || "-";
-  statCals.text = today.adjusted.calories || "-";
-  statDist.text = today.adjusted.distance || "-";
-  statHr.text = (hrm && bodyPresence.present) ? hrm.heartRate : "-";
-  statAzm.text = today.adjusted.activeZoneMinutes || "-";
-  statFloors.text = today.adjusted.elevationGain || "-";
+  statSteps.text = today.adjusted.steps || 0;
+  statCals.text = today.adjusted.calories || 0;
+  statDist.text = today.adjusted.distance || 0;
+  statHr.text = (hrm && bodyPresence.present) ? hrm.heartRate : 0;
+  statAzm.text = today.adjusted.activeZoneMinutes || 0;
+  statFloors.text = today.adjusted.elevationGain || 0;
 
   statsDetailsElement.style.display = "inline";
   statsDetailsElement.animate("enable"); //show

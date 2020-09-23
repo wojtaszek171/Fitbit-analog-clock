@@ -83,10 +83,6 @@
   text-length: 32;
 }
 
-#statsDetails {
-  fill: '#000000';
-}
-
 .statsText {
   fill: "#ffffff";
   font-size: 20;
