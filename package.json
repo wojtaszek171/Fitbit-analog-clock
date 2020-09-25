@@ -10,7 +10,7 @@
   "fitbit": {
     "appUUID": "0b0822d1-5878-47a1-8440-1cfe25107ef2",
     "appType": "clockface",
-    "appDisplayName": "Weather Clock",
+    "appDisplayName": "Analog with weather",
     "iconFile": "resources/icon.png",
     "wipeColor": "#ffffff",
     "requestedPermissions": [
