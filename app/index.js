@@ -6,8 +6,10 @@ import { BodyPresenceSensor } from "body-presence";
 import { display } from "display";
 import { today } from 'user-activity';
 import { preferences } from "user-settings";
+import { me as device } from "device";
 
 // global variables
+const IONIC_MODEL_NUMBER = "27";
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
@@ -30,6 +32,8 @@ const hourHand = document.getElementById("hours");
 const minHand = document.getElementById("mins");
 const secHand = document.getElementById("secs");
 const detailsCityName = document.getElementById("detailsCityName");
+const hoursLayer = document.getElementById("hoursLayer");
+const minutesLayer = document.getElementById("minutesLayer");
 
 let hrm = null; //heart rate sensor data
 let bodyPresence = null; //body presence sensor data
@@ -304,6 +308,11 @@ const setButtonsListeners = () => {
 
 const setAllListeners = () => {
   clock.granularity = "seconds"; // Update the clock every second
+
+  if (device.modelId === IONIC_MODEL_NUMBER) {
+    minutesLayer.href = "background/minutesIonic.png";
+    hoursLayer.href = "background/hoursIonic.png";
+  }
 
   setWeatherListener();
   setHeartListener();
