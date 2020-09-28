@@ -8,7 +8,7 @@
     "@fitbit/sdk-cli": "^1.7.3"
   },
   "fitbit": {
-    "appUUID": "0b0822d1-5878-47a1-8440-1cfe25107ef2",
+    "appUUID": "23d4f478-759a-491b-84d8-efd66c83f230",
     "appType": "clockface",
     "appDisplayName": "Analog with weather",
     "iconFile": "resources/icon.png",
@@ -18,10 +18,14 @@
       "access_activity",
       "access_internet",
       "access_location",
-      "run_background"
+      "run_background",
+      "access_aod"
     ],
     "buildTargets": [
-      "mira"
+      "mira",
+      "higgs",
+      "meson",
+      "gemini"
     ],
     "i18n": {},
     "defaultLanguage": "en-US"
