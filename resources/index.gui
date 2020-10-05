@@ -145,8 +145,8 @@
       <svg viewport-fill="#111111">
         <!-- <rect y="0" x="0" width="100%" height="100%" fill="grey"/> -->
         <use href="#scrollview">
-          <use href="#view-header" height="60">
-            <rect id="goToClockButton" width="100%" pointer-events="visible" opacity="0" fill="#ffffff">
+          <use href="#view-header" height="60" width="100%">
+            <rect id="goToClockButton" height="100%" width="100%" pointer-events="visible" opacity="0" fill="#ffffff">
               <image x="10" y="10" width="40" height="40" href="goback.png"/>
               <use x="50%-90" y="10" id="detailsCityName" href="#custom-textarea-middle" width="100% - 60" height="60" />
             </rect>
