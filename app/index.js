@@ -151,7 +151,7 @@ const displayStatsDetails = () => {
   statSteps.text = today.adjusted.steps || 0;
   statCals.text = today.adjusted.calories || 0;
   statDist.text = today.adjusted.distance || 0;
-  statHr.text = (hrm && bodyPresence.present) ? hrm.heartRate : 0;
+  statHr.text = (hrm && bodyPresence.present) ? hrm.heartRate : '--';
   statAzm.text = (today.adjusted.activeZoneMinutes && today.adjusted.activeZoneMinutes.total) || 0;
   statFloors.text = today.adjusted.elevationGain || 0;
 
