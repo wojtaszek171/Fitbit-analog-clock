@@ -95,14 +95,13 @@ const hanldeClockTick = () => {
   let hours = todayDate.getHours() % 12;
   let mins = todayDate.getMinutes();
   let secs = todayDate.getSeconds();
-  let customdatestr = todayDate.toLocaleString("default", { weekday: "short" }).substring(0, 3) + " " + todayDate.getDate() + " " + monthNames[todayDate.getMonth()].substring(0, 3);
+  let customdatestr = daysNames[todayDate.getDay()].substring(0, 3) + " " + todayDate.getDate() + " " + monthNames[todayDate.getMonth()].substring(0, 3);
 
   hourHand.groupTransform.rotate.angle = hoursToAngle(hours, mins);
   minHand.groupTransform.rotate.angle = minutesToAngle(mins);
   secHand.groupTransform.rotate.angle = secondsToAngle(secs);
 
   stepsText.text = today.adjusted.steps;
-  // dateText.text = todayDate.getDate() + " " + monthNames[todayDate.getMonth()].substring(0, 3);
   dateText.text = customdatestr;
 }
 
