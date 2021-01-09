@@ -108,10 +108,10 @@
         </section>
         <section x="92%" y="50%">
           <g id="todayDate">
-            <rect x="$-64" y="$-14" width="64" height="30" fill="#8D8A8A" />
-            <rect x="$-62" y="$-28" width="60" height="26" fill="#000000" />
-            <rect x="$-58" y="$-24" width="56" height="22" fill="#8D8A8A" />
-            <text x="$-28" y="$-5" id="dateText">12 Jan</text>
+            <rect x="$-94" y="$-14" width="94" height="30" fill="#8D8A8A" />
+            <rect x="$-92" y="$-28" width="90" height="26" fill="#000000" />
+            <rect x="$-88" y="$-24" width="86" height="22" fill="#8D8A8A" />
+            <text x="$-42" y="$-5" id="dateText">Sat 12 Jan</text>
           </g>
         </section>
         <image id="hoursLayer" x="0" y="0" width="100%" height="100%" href="background/hoursLayer.png" />
