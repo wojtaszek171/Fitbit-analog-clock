@@ -57,7 +57,7 @@ const secondsToAngle = (seconds) => {
 }
 
 const setAodListener = () => {
-  if (display.aodAvailable && display.aodAllowed) {
+  if (display.aodAvailable && display.aodActive) {
     display.aodAllowed = true;
 
     const weatherSection = document.getElementById("weather");
