@@ -101,7 +101,8 @@ const hanldeClockTick = () => {
   secHand.groupTransform.rotate.angle = secondsToAngle(secs);
 
   stepsText.text = today.adjusted.steps;
-  dateText.text = todayDate.getDate() + " " + monthNames[todayDate.getMonth()].substring(0, 3);
+  // dateText.text = todayDate.getDate() + " " + monthNames[todayDate.getMonth()].substring(0, 3);
+  dateText.text = todayDate.toLocaleString("default", { weekday: "short" }) + " " + todayDate.getDate() + " " + monthNames[todayDate.getMonth()].substring(0, 3);
 }
 
 const fetchTodayWeather = () => {
