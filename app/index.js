@@ -7,6 +7,7 @@ import { display } from "display";
 import { today } from 'user-activity';
 import { preferences } from "user-settings";
 import { me as device } from "device";
+import { commands, statsIds, tempIds } from "../globals";
 
 // global variables
 const IONIC_MODEL_NUMBER = "27";
@@ -18,11 +19,15 @@ const dateText = document.getElementById("dateText");
 const weatherIcon = document.getElementById("weatherIcon");
 const cityname = document.getElementById("cityname");
 const degrees = document.getElementById("degrees");
+const weatherSection = document.getElementById("weather");
 const reloadWeatherButton = document.getElementById("weatherRefreshButton");
 const weatherButton = document.getElementById("weatherButton");
 const statsButton = document.getElementById("showStatsButton");
 const weatherButtonIcon = document.getElementById("weatherButtonIcon");
-const stepsText = document.getElementById("stepstext");
+const ltStatText = document.getElementById("ltStatText");
+const rtStatText = document.getElementById("rtStatText");
+const lbStatText = document.getElementById("lbStatText");
+const rbStatText = document.getElementById("rbStatText");
 const toastElement = document.getElementById("toastUse");
 const statsDetailsElement = document.getElementById("statsDetailsUse");
 const toastText =   document.getElementById("toastText");
@@ -34,9 +39,15 @@ const secHand = document.getElementById("secs");
 const detailsCityName = document.getElementById("detailsCityName");
 const hoursLayer = document.getElementById("hoursLayer");
 const minutesLayer = document.getElementById("minutesLayer");
+const ltStat = document.getElementById("ltStat");
+const lbStat = document.getElementById("lbStat");
+const rbStat = document.getElementById("rbStat");
+const heartRateSection = document.getElementById("heartRate");
 
 let hrm = null; //heart rate sensor data
 let bodyPresence = null; //body presence sensor data
+let statsArr = [];
+let hrIconEnabled = true;
 
 let toastTimeout = null;
 let statsDetailsTimeout = null;
@@ -60,9 +71,7 @@ const setAodListener = () => {
   if (display.aodAvailable && display.aodActive) {
     display.aodAllowed = true;
 
-    const weatherSection = document.getElementById("weather");
-    const heartRateSection = document.getElementById("heartRate");
-    const stepsSection = document.getElementById("steps");
+    const rtStatSection = document.getElementById("rtStat");
     const minutesLayer = document.getElementById("minutesLayer");
 
     display.addEventListener("change", () => {
@@ -72,7 +81,7 @@ const setAodListener = () => {
         secHand.style.display = "inline";
         weatherSection.style.display = "inline";
         heartRateSection.style.display = "inline";
-        stepsSection.style.display = "inline";
+        rtStatSection.style.display = "inline";
         minutesLayer.style.display = "inline";
         hrm.start();
         bodyPresence.start();
@@ -81,7 +90,7 @@ const setAodListener = () => {
         secHand.style.display = "none";
         weatherSection.style.display = "none";
         heartRateSection.style.display = "none";
-        stepsSection.style.display = "none";
+        rtStatSection.style.display = "none";
         minutesLayer.style.display = "none";
         hrm.stop();
         bodyPresence.stop();
@@ -90,7 +99,7 @@ const setAodListener = () => {
   }
 };
 
-const hanldeClockTick = () => {
+const handleClockTick = () => {
   let todayDate = new Date();
   let hours = todayDate.getHours() % 12;
   let mins = todayDate.getMinutes();
@@ -101,8 +110,30 @@ const hanldeClockTick = () => {
   minHand.groupTransform.rotate.angle = minutesToAngle(mins);
   secHand.groupTransform.rotate.angle = secondsToAngle(secs);
 
-  stepsText.text = today.adjusted.steps;
+  updateCornerStats();
+
   dateText.text = customdatestr;
+}
+
+const updateCornerStats = () => {
+  statsArr.forEach((stat) => {
+    switch (stat.key) {
+      case 'rtStat':
+        rtStatText.text = stat.value() || today.adjusted.steps;
+        break;
+      case 'ltStat':
+        ltStatText.text = stat.value();
+        break;
+      case 'lbStat':
+        lbStatText.text = stat.value();
+        break;
+      case 'rbStat':
+        rbStatText.text = stat.value();
+        break;
+      default:
+        break;
+    }
+  });
 }
 
 const fetchTodayWeather = () => {
@@ -113,17 +144,37 @@ const fetchTodayWeather = () => {
   degrees.text = '';
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
     messaging.peerSocket.send({
-      command: 'todayWeather'
+      command: commands.todayWeather
     });
   } else {
     displayToast("Failed loading weather. Open Fitbit app on your phone.");
   }
 }
 
+const fetchStatsSettings = () => {
+  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+    messaging.peerSocket.send({
+      command: commands.getStatsSettings
+    });
+  } else {
+    displayToast("Failed loading settings. Open Fitbit app on your phone.");
+  }
+}
+
+const fetchHRToggleSetting = () => {
+  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+    messaging.peerSocket.send({
+      command: commands.disableHRSetting
+    });
+  } else {
+    displayToast("Failed loading settings. Open Fitbit app on your phone.");
+  }
+}
+
 const fetch5daysWeather = () => {
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
     messaging.peerSocket.send({
-      command: 'forecastWeather'
+      command: commands.forecastWeather
     });
   } else {
     displayToast("Failed loading weather. Open Fitbit app on your phone.");
@@ -169,8 +220,10 @@ const displayStatsDetails = () => {
   }, 3000);
 }
 
-const setWeatherListener = () => {
+const setSettingsListener = () => {
   messaging.peerSocket.onopen = () => {
+    fetchStatsSettings();
+    fetchHRToggleSetting();
     fetchTodayWeather();
   }
 
@@ -181,9 +234,15 @@ const setWeatherListener = () => {
   const weatherInterval = null;
   messaging.peerSocket.onmessage = (evt) => {
     const data = evt.data;
+  
+    if (data.error) {
+      return displayToast(data.error);
+    }
+
     switch (data.command) {
-      case 'todayWeather':
-        if (data.enabled === 'true' && data.hasApi)  {          
+      case commands.todayWeather:
+        if (data.enabled === 'true' && data.hasApi)  {
+          weatherSection.style.display = "inline";
           weatherView.style.display = "inline";
           reloadWeatherButton.style.display = "inline";
           weatherButton.style.display = "inline";
@@ -201,10 +260,8 @@ const setWeatherListener = () => {
             }
             weatherInterval = setInterval(fetchTodayWeather, Number(updateMinutes) * 1000 * 60);
           }
-          if (data.error !== null) {
-            displayToast(data.error);
-          }
         } else {
+          weatherSection.style.display = "none";
           weatherView.style.display = "none";
           reloadWeatherButton.style.display = "none";
           weatherButton.style.display = "none";
@@ -213,7 +270,7 @@ const setWeatherListener = () => {
           degrees.text = '';
         }
         break;
-      case 'forecastWeather':        
+      case commands.forecastWeather:
         if (data.enabled === 'true')  {
           detailsCityName.text = data.cityName;
         }
@@ -228,19 +285,19 @@ const setWeatherListener = () => {
             const unit = data.temperatureUnit;
             
             switch (unit) {
-              case 0:
-                temperatureElement.style.fontSize = 16;
-              break;
-              case 1:
+              case tempIds.f:
                 temperatureElement.style.fontSize = 16;
                 break;
-              case 2:
+              case tempIds.k:
+                temperatureElement.style.fontSize = 16;
+                break;
+              case tempIds.c:
                 temperatureElement.style.fontSize = 20;
                 break;
               default:
                 break;
             }
-    
+
             temperatureElement.text = Math.round(hourWeather.temperature) + "°";
 
             if(preferences.clockDisplay === '24h'){
@@ -249,14 +306,82 @@ const setWeatherListener = () => {
               const addString = ([0,1,2,3].includes(i)) ? ' PM' : ' AM';
               hourElement.getElementById("rowWeatherTime").text = hourWeather.hour%12 + addString;
             }
-            hourElement.getElementById("rowWeatherIcon").href = "weatherimages/"+hourWeather.icon+".png";
+            hourElement.getElementById("rowWeatherIcon").href = `weatherimages/${hourWeather.icon}.png`;
           });
         }
         break;
+      case commands.getStatsSettings:
+        ltStat.style.display = "none";
+        lbStat.style.display = "none";
+        rbStat.style.display = "none";
+
+        const { payload } = data;
+
+        statsArr = [...Object.keys(payload).reduce((acc, key) => {
+          if (payload[key]) {
+            acc.push({
+              key,
+              stat: payload[key],
+              value: getStatFunction(payload[key])
+            });
+          }
+
+          return acc;
+        }, [])];
+
+        statsArr.forEach((stat) => {
+            switch (stat.key) {
+              case 'ltStat':
+                ltStat.style.display = "inline";
+                break;
+              case 'lbStat':
+                lbStat.style.display = "inline";
+                break;
+              case 'rbStat':
+                rbStat.style.display = "inline";
+                break;
+              default:
+                break;
+            }
+
+            const statImage = document.getElementById(`${stat.key}Image`);
+            statImage.href = `statsimages/${stat.stat}.png`;
+            updateCornerStats();
+        });
+        break;
+      case commands.settingsChanged:
+        fetchStatsSettings();
+        fetchHRToggleSetting();
+        break;
+      case commands.disableHRSetting:
+        hrIconEnabled = !data.disabled;
+        if (hrIconEnabled) {
+          heartRateSection.style.display = "inline";
+        } else {
+          heartRateSection.style.display = "none";
+        }
       default:
         break;
     }
-    
+  }
+}
+
+const getStatFunction = (stat) => {
+  switch (stat) {
+    case statsIds.steps:
+      return () => today.adjusted.steps || 0;
+    case statsIds.cals:
+      return () => today.adjusted.calories || 0;
+    case statsIds.dist:
+      return () => today.adjusted.distance || 0;
+    case statsIds.hr:
+      return () => (hrm && bodyPresence.present) ? hrm.heartRate : '--';
+    case statsIds.azm:
+      return () => (today.adjusted.activeZoneMinutes && today.adjusted.activeZoneMinutes.total) || 0;
+    case statsIds.floors:
+      return () => today.adjusted.elevationGain || 0;
+    default:
+      return;
   }
 }
 
@@ -308,6 +433,10 @@ const setButtonsListeners = () => {
 }
 
 const setAllListeners = () => {
+  ltStat.style.display = "none";
+  lbStat.style.display = "none";
+  rbStat.style.display = "none";
+
   clock.granularity = "seconds"; // Update the clock every second
 
   if (device.modelId === IONIC_MODEL_NUMBER) {
@@ -315,12 +444,12 @@ const setAllListeners = () => {
     hoursLayer.href = "background/hoursIonic.png";
   }
 
-  setWeatherListener();
+  setSettingsListener();
   setHeartListener();
   setAodListener();
   setButtonsListeners();
 
-  clock.ontick = () => hanldeClockTick();
+  clock.ontick = () => handleClockTick();
 }
 
 setAllListeners();
