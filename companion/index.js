@@ -1,6 +1,7 @@
 import * as messaging from "messaging";
 import { settingsStorage } from "settings";
 import { geolocation } from "geolocation";
+import { commands, statsIds, tempIds } from "../globals";
 
 const queryTodayOpenWeather = () => {
   const weatherApiSetting = JSON.parse(settingsStorage.getItem("weatherApiKey"));
@@ -13,7 +14,7 @@ const queryTodayOpenWeather = () => {
   const temperatureUnit = JSON.parse(settingsStorage.getItem("temperatureUnit"));
 
   let weather = {
-    command: 'todayWeather',
+    command: commands.todayWeather,
     enabled: weatherEnabled,
     hasApi: API_KEY.length > 0,
     cityName: '',
@@ -27,21 +28,22 @@ const queryTodayOpenWeather = () => {
   if (weatherEnabled === 'true' && API_KEY && (cityName || gpsEnabled === 'true')) {
     let ENDPOINT = "https://api.openweathermap.org/data/2.5/weather";
         
-    switch (temperatureUnit ? temperatureUnit.values[0].value : 2) {
-      case 0:
+    switch (temperatureUnit ? temperatureUnit.values[0].value : tempIds.c) {
+      case tempIds.f:
         ENDPOINT += "?units=imperial";
         break;
-      case 1:
+      case tempIds.k:
         ENDPOINT += "?units=standard";
         break;
-      case 2:
+      case tempIds.c:
         ENDPOINT += "?units=metric";
         break;
       default:
+        ENDPOINT += "?units=metric";
         break;
     }
 
-    if (gpsEnabled === 'true') {      
+    if (gpsEnabled === 'true') {
       geolocation.getCurrentPosition((position) => {
         ENDPOINT += "&lat="+ position.coords.latitude +"&lon=" + position.coords.longitude;
 
@@ -66,11 +68,15 @@ const queryTodayOpenWeather = () => {
 const fetchTodayWeather = (ENDPOINT, API_KEY, weather) => {
   const updateEverySetting = JSON.parse(settingsStorage.getItem("updateEvery"));
   const updateEvery = updateEverySetting ? updateEverySetting.values[0].value : 30;
-  
-  fetch(ENDPOINT + "&APPID=" + API_KEY)
+
+  fetch(`${ENDPOINT}&APPID=${API_KEY}`)
   .then((response) => {
       response.json()
-      .then((data) => {                           
+      .then((data) => {
+        if (data.message) {
+          return displayApiError(data);
+        }
+
         weather.temperature = data.main.temp;
         weather.weatherElement = data.weather[0];
         weather.updateEveryMinutes = updateEvery;
@@ -99,7 +105,7 @@ const query5daysOpenWeather = () => {
   const temperatureUnit = JSON.parse(settingsStorage.getItem("temperatureUnit"));
 
   let message = {
-    command: 'forecastWeather',
+    command: commands.forecastWeather,
     enabled: weatherEnabled,
     cityName: '',
     error: null,
@@ -110,13 +116,13 @@ const query5daysOpenWeather = () => {
     let ENDPOINT = "https://api.openweathermap.org/data/2.5/forecast";
 
     switch (temperatureUnit ? temperatureUnit.values[0].value : 2) {
-      case 0:
+      case tempIds.f:
         ENDPOINT += "?units=imperial";
         break;
-      case 1:
+      case tempIds.k:
         ENDPOINT += "?units=standard";
         break;
-      case 2:
+      case tempIds.c:
         ENDPOINT += "?units=metric";
         break;
       default:
@@ -149,10 +155,14 @@ const fetch5daysWeather = (ENDPOINT, API_KEY, message) => {
   let weatherDaysMessage = [];
   const temperatureUnit = JSON.parse(settingsStorage.getItem("temperatureUnit"));
 
-  fetch(ENDPOINT + "&APPID=" + API_KEY)
+  fetch(`${ENDPOINT}&APPID=${API_KEY}`)
   .then((response) => {
       response.json()
-      .then((data) => {            
+      .then((data) => {      
+        if (data.message) {
+          return displayApiError(data);
+        }
+      
         if (data.city.name) {
           message.cityName = data.city.name;
         } else {
@@ -184,7 +194,7 @@ const fetch5daysWeather = (ENDPOINT, API_KEY, message) => {
         weatherDaysMessage.forEach((weatherDayMessage, i) => {
           messaging.peerSocket.send({
             svgElement: (i+1).toString(),
-            command: 'forecastWeather',
+            command: commands.forecastWeather,
             weatherDayMessage,
             temperatureUnit: temperatureUnit ? temperatureUnit.values[0].value : 2
           });
@@ -197,12 +207,72 @@ const fetch5daysWeather = (ENDPOINT, API_KEY, message) => {
   });
 };
 
-messaging.peerSocket.onmessage = (evt) => {
-  if (evt.data && evt.data.command == "todayWeather") {
-    queryTodayOpenWeather();
+const displayApiError = (data) => {
+  let message = '';
+
+  switch (data.cod) {
+    case 401:
+      message = 'Invalid weather API key';
+      break;
+    case 429:
+      message = 'You reached API limit';
+      break;
+    default:
+      message = 'Unknown weather server error';
+      break;
   }
-  if (evt.data && evt.data.command == "forecastWeather") {
-    query5daysOpenWeather();
+
+  const errorObj = {
+    error: message
+  }
+  messaging.peerSocket.send(errorObj);
+}
+
+const returnStatsSettingsValues = () => {
+  const weatherEnabled = settingsStorage.getItem("enableWeather") === "true";
+  const ltStat = JSON.parse(settingsStorage.getItem("ltStatSel"));
+  const rtStat = JSON.parse(settingsStorage.getItem("rtStatSel"));
+  const lbStat = JSON.parse(settingsStorage.getItem("lbStatSel"));
+  const rbStat = JSON.parse(settingsStorage.getItem("rbStatSel"));
+
+  messaging.peerSocket.send({
+    command: commands.getStatsSettings,
+    payload: {
+      ltStat: (ltStat && ltStat.values.length && !weatherEnabled) ? ltStat.values[0].value : undefined,
+      rtStat: (rtStat && rtStat.values.length) ? rtStat.values[0].value : statsIds.steps,
+      lbStat: (lbStat && lbStat.values.length) ? lbStat.values[0].value : undefined,
+      rbStat: (rbStat && rbStat.values.length) ? rbStat.values[0].value : undefined
+    }
+  });
+}
+
+const returnHRToggleValue = () => {
+  messaging.peerSocket.send({
+    command: commands.disableHRSetting,
+    disabled: settingsStorage.getItem("disableHRToggle") === "true"
+  });
+}
+
+messaging.peerSocket.onmessage = (evt) => {
+  if (!evt.data) {
+    return
+  }
+
+  switch (evt.data.command) {
+    case commands.todayWeather:
+      queryTodayOpenWeather();
+      break;
+    case commands.forecastWeather:
+      query5daysOpenWeather();
+      break;
+    case commands.getStatsSettings:
+      returnStatsSettingsValues();
+      break;
+    case commands.disableHRSetting:
+      returnHRToggleValue();
+      break;
+    default:
+      break;
   }
 }
 
@@ -212,6 +282,22 @@ messaging.peerSocket.onerror = (err) => {
 
 settingsStorage.onchange = (evt) => {
   switch (evt.key) {
+    case 'ltStatSel':
+    case 'rtStatSel':
+    case 'lbStatSel':
+    case 'rbStatSel':
+    case 'enableWeather':
+      messaging.peerSocket.send({
+        command: commands.settingsChanged,
+        payload: evt
+      });
+      queryTodayOpenWeather();
+      break;
+    case 'disableHRToggle':
+      messaging.peerSocket.send({
+        command: commands.disableHRSetting,
+        disabled: settingsStorage.getItem("disableHRToggle") === "true"
+      });
     default:
       queryTodayOpenWeather();
       break;

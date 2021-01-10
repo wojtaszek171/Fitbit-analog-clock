@@ -59,7 +59,29 @@
   text-length: 3;
 }
 
-#stepstext {
+#rtStatText {
+  font-size: "18";
+  font-weight: bold;
+  fill: "#ffffff";
+  text-anchor: end;
+  text-length: 10;
+}
+
+#ltStatText{
+  font-size: "18";
+  font-weight: bold;
+  fill: "#ffffff";
+  text-length: 10;
+}
+
+#lbStatText{
+  font-size: "18";
+  font-weight: bold;
+  fill: "#ffffff";
+  text-length: 10;
+}
+
+#rbStatText{
   font-size: "18";
   font-weight: bold;
   fill: "#ffffff";

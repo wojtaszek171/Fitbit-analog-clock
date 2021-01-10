@@ -100,10 +100,28 @@
             <text x="$-16" y="$-14" id="heartratetext">--</text>
           </g>
         </section>
+        <section x="8%" y="30">
+          <g id="ltStat">
+            <image x="$" y="$-4" width="20" id="ltStatImage" fill="#ffffff" height="20" href="statsimages/steps.png" />
+            <text x="$+2" y="$-4" id="ltStatText">---</text>
+          </g>
+        </section>
         <section x="85%" y="30">
-          <g id="steps">
-            <image x="$" y="$-4" width="20" fill="#ffffff" height="20" href="statsimages/steps.png" />
-            <text x="$-22" y="$-4" id="stepstext">---</text>
+          <g id="rtStat">
+            <image x="$" y="$-4" width="20" id="rtStatImage" fill="#ffffff" height="20" href="statsimages/steps.png" />
+            <text x="$-22" y="$-4" id="rtStatText">---</text>
+          </g>
+        </section>
+        <section x="8%" y="85%">
+          <g id="lbStat">
+            <image x="$" y="$-4" width="20" id="lbStatImage" fill="#ffffff" height="20" href="statsimages/steps.png" />
+            <text x="$+2" y="$-4" id="lbStatText">---</text>
+          </g>
+        </section>
+        <section x="85%" y="85%">
+          <g id="rbStat">
+            <image x="$" y="$-4" width="20" id="rbStatImage" fill="#ffffff" height="20" href="statsimages/steps.png" />
+            <text x="$-22" y="$-4" id="rbStatText">---</text>
           </g>
         </section>
         <section x="92%" y="50%">
