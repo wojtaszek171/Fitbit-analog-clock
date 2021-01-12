@@ -7,10 +7,9 @@ import { display } from "display";
 import { today } from 'user-activity';
 import { preferences } from "user-settings";
 import { me as device } from "device";
-import { commands, statsIds, tempIds } from "../globals";
+import { commands, IONIC_MODEL_NUMBER, statsIds, tempIds, VERSA_LITE_MODEL_NUMBER } from "../globals";
 
 // global variables
-const IONIC_MODEL_NUMBER = "27";
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
@@ -441,6 +440,10 @@ const setAllListeners = () => {
   if (device.modelId === IONIC_MODEL_NUMBER) {
     minutesLayer.href = "background/minutesIonic.png";
     hoursLayer.href = "background/hoursIonic.png";
+  }
+
+  if (device.modelId === VERSA_LITE_MODEL_NUMBER) {
+    document.getElementById("statsRowFloors").style.display = "none";
   }
 
   setSettingsListener();

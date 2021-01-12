@@ -42,8 +42,10 @@
               <text x="50%+15" y="22" class="statsText" id="statsAzm">-</text>
             </section>
             <section class="statsRow" x="0%" y="$">
-              <image class="whiteImage" height="30" width="30" href="statsimages/floors.png" />
-              <text x="50%+15" y="22" class="statsText" id="statsFloors">-</text>
+              <g id="statsRowFloors">
+                <image class="whiteImage" height="30" width="30" href="statsimages/floors.png" />
+                <text x="50%+15" y="22" class="statsText" id="statsFloors">-</text>
+              </g>
             </section>
           </section>
           <animate attributeName="x" begin="enable" from="100%" to="100%-130" dur="1"/>

@@ -2,6 +2,7 @@ import * as messaging from "messaging";
 import { settingsStorage } from "settings";
 import { geolocation } from "geolocation";
 import { commands, statsIds, tempIds } from "../globals";
+import { device } from "peer";
 
 const queryTodayOpenWeather = () => {
   const weatherApiSetting = JSON.parse(settingsStorage.getItem("weatherApiKey"));
@@ -252,6 +253,8 @@ const returnHRToggleValue = () => {
     disabled: settingsStorage.getItem("disableHRToggle") === "true"
   });
 }
+
+settingsStorage.setItem("modelId", device.modelId);
 
 messaging.peerSocket.onmessage = (evt) => {
   if (!evt.data) {

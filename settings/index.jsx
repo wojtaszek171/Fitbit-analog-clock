@@ -1,8 +1,30 @@
-import { statsIds, tempIds } from "../globals";
+import { statsIds, tempIds, VERSA_LITE_MODEL_NUMBER } from "../globals";
 
 function settingsComponent(props) {
   const weatherEnabled = props.settings.enableWeather === "true";
   const gpsEnabled = props.settings.gpsEnabled === "true";
+
+  let cornerOptions = [
+    { name: 'Disabled', value: undefined },
+    { name: 'Steps', value: statsIds.steps },
+    { name: 'Calories', value: statsIds.cals },
+    { name: 'Distance', value: statsIds.dist },
+    { name: 'Heart rate', value: statsIds.hr },
+    { name: 'Active minutes', value: statsIds.azm }
+  ];
+
+  let rtOptions = [
+    { name: 'Steps (default)', value: statsIds.steps },
+    { name: 'Calories', value: statsIds.cals },
+    { name: 'Distance', value: statsIds.dist },
+    { name: 'Heart rate', value: statsIds.hr },
+    { name: 'Active minutes', value: statsIds.azm }
+  ];
+
+  if (props.settingsStorage.getItem("modelId") !== VERSA_LITE_MODEL_NUMBER) {
+    cornerOptions.push({ name: 'Floors', value: statsIds.floors });
+    rtOptions.push({ name: 'Floors', value: statsIds.floors });
+  }
 
   return (
     <Page>
@@ -17,54 +39,23 @@ function settingsComponent(props) {
         <Select
           settingsKey="ltStatSel"
           label={`Left top: ${weatherEnabled ? 'Weather' : ''}`}
-          options={[
-            { name: 'Disabled', value: undefined },
-            { name: 'Steps', value: statsIds.steps },
-            { name: 'Calories', value: statsIds.cals },
-            { name: 'Distance', value: statsIds.dist },
-            { name: 'Heart rate', value: statsIds.hr },
-            { name: 'Active minutes', value: statsIds.azm },
-            { name: 'Floors', value: statsIds.floors },
-          ]}
+          options={cornerOptions}
           disabled={weatherEnabled}
         />
         <Select
           settingsKey="rtStatSel"
           label="Right top:"
-          options={[
-            { name: 'Steps (default)', value: statsIds.steps },
-            { name: 'Calories', value: statsIds.cals },
-            { name: 'Distance', value: statsIds.dist },
-            { name: 'Heart rate', value: statsIds.hr },
-            { name: 'Active minutes', value: statsIds.azm },
-            { name: 'Floors', value: statsIds.floors },
-          ]}
+          options={rtOptions}
         />
         <Select
           settingsKey="lbStatSel"
           label="Left bottom:"
-          options={[
-            { name: 'Disabled', value: undefined },
-            { name: 'Steps', value: statsIds.steps },
-            { name: 'Calories', value: statsIds.cals },
-            { name: 'Distance', value: statsIds.dist },
-            { name: 'Heart rate', value: statsIds.hr },
-            { name: 'Active minutes', value: statsIds.azm },
-            { name: 'Floors', value: statsIds.floors },
-          ]}
+          options={cornerOptions}
         />
         <Select
           settingsKey="rbStatSel"
           label="Right bottom:"
-          options={[
-            { name: 'Disabled', value: undefined },
-            { name: 'Steps', value: statsIds.steps },
-            { name: 'Calories', value: statsIds.cals },
-            { name: 'Distance', value: statsIds.dist },
-            { name: 'Heart rate', value: statsIds.hr },
-            { name: 'Active minutes', value: statsIds.azm },
-            { name: 'Floors', value: statsIds.floors },
-          ]}
+          options={cornerOptions}
         />
         <Toggle
           label="Disable default HR"

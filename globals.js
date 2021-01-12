@@ -1,3 +1,6 @@
+export const IONIC_MODEL_NUMBER = "27";
+export const VERSA_LITE_MODEL_NUMBER = "38";
+
 export const statsIds = {
     steps: 'steps',
     cals: 'cals',
