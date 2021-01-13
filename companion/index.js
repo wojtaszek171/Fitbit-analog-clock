@@ -116,7 +116,7 @@ const query5daysOpenWeather = () => {
   if (weatherEnabled === 'true' && API_KEY && (cityName || gpsEnabled === 'true')) {
     let ENDPOINT = "https://api.openweathermap.org/data/2.5/forecast";
 
-    switch (temperatureUnit ? temperatureUnit.values[0].value : 2) {
+    switch (temperatureUnit ? temperatureUnit.values[0].value : tempIds.c) {
       case tempIds.f:
         ENDPOINT += "?units=imperial";
         break;
@@ -127,6 +127,7 @@ const query5daysOpenWeather = () => {
         ENDPOINT += "?units=metric";
         break;
       default:
+        ENDPOINT += "?units=metric";
         break;
     }
                     
