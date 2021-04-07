@@ -57,7 +57,7 @@ const queryTodayOpenWeather = () => {
   };
 
   if (weatherConfigured) {
-    let parameters = "weather?units=";
+    let parameters = "?units=";
         
     switch (temperatureUnit) {
       case tempIds.f:
@@ -96,7 +96,7 @@ const queryTodayOpenWeather = () => {
 }
 
 const fetchTodayWeather = (parameters, API_KEY, weather) => {
-  fetch(`https://api.openweathermap.org/data/2.5/${parameters}&APPID=${API_KEY}`)
+  fetch(`https://api.openweathermap.org/data/2.5/weather${parameters}&APPID=${API_KEY}`)
   .then((response) => {
       response.json()
       .then((data) => {
@@ -134,7 +134,7 @@ const query5daysOpenWeather = () => {
   };
 
   if (weatherConfigured) {
-    let parameters = "weather?units=";
+    let parameters = "?units=";
         
     switch (temperatureUnit) {
       case tempIds.f:

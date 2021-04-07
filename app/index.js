@@ -10,9 +10,8 @@ import { me as device } from "device";
 import { commands, IONIC_MODEL_NUMBER, statsIds, tempIds, VERSA_LITE_MODEL_NUMBER } from "../globals";
 
 // global variables
-const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const daysNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const dateText = document.getElementById("dateText");
 const weatherIcon = document.getElementById("weatherIcon");
@@ -94,7 +93,7 @@ const handleClockTick = () => {
 
   updateCornerStats();
 
-  dateText.text = todayDate.getDate() + " " + monthNames[todayDate.getMonth()].substring(0, 3);
+  dateText.text = todayDate.getDate() + " " + monthNames[todayDate.getMonth()];
 }
 
 const updateCornerStats = () => {
