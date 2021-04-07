@@ -8,6 +8,7 @@ import { today } from 'user-activity';
 import { preferences } from "user-settings";
 import { me as device } from "device";
 import { commands, IONIC_MODEL_NUMBER, statsIds, tempIds, VERSA_LITE_MODEL_NUMBER } from "../globals";
+import { getSettingFromFile, initializeSettings, updateSettingsFile } from "./settingsService";
 
 // global variables
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
@@ -46,7 +47,6 @@ const minutesLayer = document.getElementById("minutesLayer");
 let hrm = null; //heart rate sensor data
 let bodyPresence = null; //body presence sensor data
 let statsArr = [];
-let hrIconEnabled = true;
 
 let toastTimeout = null;
 let statsDetailsTimeout = null;
@@ -205,11 +205,10 @@ const setSettingsListener = () => {
   messaging.peerSocket.onopen = () => {
     fetchStatsSettings();
     fetchHRToggleSetting();
-    fetchTodayWeather();
-  }
 
-  messaging.peerSocket.onerror = () => {
-    displayToast("Connection error: waiting for socket to open");
+    if (getSettingFromFile('weatherConfigured')) {
+      fetchTodayWeather();
+    }
   }
 
   const weatherInterval = null;
@@ -222,12 +221,9 @@ const setSettingsListener = () => {
 
     switch (data.command) {
       case commands.todayWeather:
-        if (data.displayWeather)  {
-          weatherSection.style.display = "inline";
-          weatherView.style.display = "inline";
-          reloadWeatherButton.style.display = "inline";
-          weatherButton.style.display = "inline";
-          weatherButtonIcon.style.display = "inline";
+        updateSettingsFile({ weatherConfigured: data.displayWeather });
+        enableWeatherSection(data.displayWeather);
+        if (data.displayWeather) {
           const updateMinutes = data.updateEveryMinutes ? data.updateEveryMinutes : 30;  
           if (data.temperature) {
             const el = data.weatherElement;
@@ -241,17 +237,10 @@ const setSettingsListener = () => {
             }
             weatherInterval = setInterval(fetchTodayWeather, Number(updateMinutes) * 1000 * 60);
           }
-        } else {
-          weatherSection.style.display = "none";
-          weatherView.style.display = "none";
-          reloadWeatherButton.style.display = "none";
-          weatherButton.style.display = "none";
-          weatherButtonIcon.style.display = "none";
-          cityname.text = '';
-          degrees.text = '';
         }
         break;
       case commands.forecastWeather:
+        updateSettingsFile({ weatherConfigured: data.displayWeather });
         if (data.displayWeather)  {
           detailsCityName.text = data.cityName;
         }
@@ -298,53 +287,63 @@ const setSettingsListener = () => {
 
         const { payload } = data;
 
-        statsArr = [...Object.keys(payload).reduce((acc, key) => {
-          if (payload[key]) {
-            acc.push({
-              key,
-              stat: payload[key],
-              value: getStatFunction(payload[key])
-            });
-          }
-
-          return acc;
-        }, [])];
-
-        statsArr.forEach((stat) => {
-            switch (stat.key) {
-              case 'ltStat':
-                ltStat.style.display = "inline";
-                break;
-              case 'lbStat':
-                lbStat.style.display = "inline";
-                break;
-              case 'rbStat':
-                rbStat.style.display = "inline";
-                break;
-              default:
-                break;
-            }
-
-            const statImage = document.getElementById(`${stat.key}Image`);
-            statImage.href = `statsimages/${stat.stat}.png`;
-            updateCornerStats();
-        });
+        updateSettingsFile({ cornerStats: payload });
+        initializeCornerSettings(payload);
         break;
       case commands.settingsChanged:
         fetchStatsSettings();
         fetchHRToggleSetting();
         break;
       case commands.disableHRSetting:
-        hrIconEnabled = !data.disabled;
-        if (hrIconEnabled) {
-          heartRateSection.style.display = "inline";
-        } else {
-          heartRateSection.style.display = "none";
-        }
+        updateSettingsFile({ hrIconEnabled: !data.disabled });
+        showHRIcon(!data.disabled);
+        break;
       default:
         break;
     }
   }
+}
+
+const showHRIcon = (hrIconEnabled) => {
+  if (hrIconEnabled) {
+    heartRateSection.style.display = "inline";
+  } else {
+    heartRateSection.style.display = "none";
+  }
+}
+
+const initializeCornerSettings = (payload) => {
+  statsArr = [...Object.keys(payload).reduce((acc, key) => {
+    if (payload[key]) {
+      acc.push({
+        key,
+        stat: payload[key],
+        value: getStatFunction(payload[key])
+      });
+    }
+
+    return acc;
+  }, [])];
+
+  statsArr.forEach((stat) => {
+      switch (stat.key) {
+        case 'ltStat':
+          ltStat.style.display = "inline";
+          break;
+        case 'lbStat':
+          lbStat.style.display = "inline";
+          break;
+        case 'rbStat':
+          rbStat.style.display = "inline";
+          break;
+        default:
+          break;
+      }
+
+      const statImage = document.getElementById(`${stat.key}Image`);
+      statImage.href = `statsimages/${stat.stat}.png`;
+      updateCornerStats();
+  });
 }
 
 const getStatFunction = (stat) => {
@@ -413,10 +412,38 @@ const setButtonsListeners = () => {
   }
 }
 
+const enableWeatherSection = (enable) => {
+  if (enable) {
+    weatherSection.style.display = "inline";
+    weatherView.style.display = "inline";
+    reloadWeatherButton.style.display = "inline";
+    weatherButton.style.display = "inline";
+    weatherButtonIcon.style.display = "inline";
+  } else {
+    weatherSection.style.display = "none";
+    weatherView.style.display = "none";
+    reloadWeatherButton.style.display = "none";
+    weatherButton.style.display = "none";
+    weatherButtonIcon.style.display = "none";
+    cityname.text = '';
+    degrees.text = '';
+  }
+}
+
+const recoverLastSettings = () => {
+  const cornerStats = getSettingFromFile('cornerStats');
+  initializeCornerSettings(cornerStats ? cornerStats : {});
+  showHRIcon(!!getSettingFromFile('hrIconEnabled'));
+
+  enableWeatherSection(getSettingFromFile('weatherConfigured'));
+}
+
 const setAllListeners = () => {
   ltStat.style.display = "none";
   lbStat.style.display = "none";
   rbStat.style.display = "none";
+  initializeSettings();
+  recoverLastSettings();
 
   clock.granularity = "seconds"; // Update the clock every second
 

@@ -12,14 +12,14 @@
 }
 
 .left18pxbold{
-  font-size: "18";
+  font-size: 18;
   font-weight: bold;
   fill: "#ffffff";
   text-length: 40;
 }
 
 .middle22pxbold{
-  font-size: "22";
+  font-size: 22;
   font-weight: bold;
   fill: "#ffffff";
   text-length: 40;
@@ -32,27 +32,27 @@
 
 #rowWeatherTime {
   fill: "#ffffff";
-  font-size: "15";
+  font-size: 15;
   text-length: 5;
   text-anchor: middle;
 }
 
 #rowWeatherDegrees {
   fill: "#ffffff";
-  font-size: "20";
+  font-size: 20;
   text-length: 5;
   text-anchor: middle;
 }
 
 #degrees {
-  font-size: "20";
+  font-size: 20;
   font-weight: bold;
   text-length: 5;
   fill: "#ffffff";
 }
 
 #heartratetext {
-  font-size: "14";
+  font-size: 14;
   font-weight: bold;
   fill: "#ffffff";
   text-anchor: middle;
@@ -60,7 +60,7 @@
 }
 
 #rtStatText {
-  font-size: "18";
+  font-size: 18;
   font-weight: bold;
   fill: "#ffffff";
   text-anchor: end;
@@ -68,21 +68,21 @@
 }
 
 #ltStatText{
-  font-size: "18";
+  font-size: 18;
   font-weight: bold;
   fill: "#ffffff";
   text-length: 10;
 }
 
 #lbStatText{
-  font-size: "18";
+  font-size: 18;
   font-weight: bold;
   fill: "#ffffff";
   text-length: 10;
 }
 
 #rbStatText{
-  font-size: "18";
+  font-size: 18;
   font-weight: bold;
   fill: "#ffffff";
   text-anchor: end;
@@ -90,7 +90,7 @@
 }
 
 #dateText {
-  font-size: "18";
+  font-size: 18;
   font-weight: bold;
   fill: "#000000";
   text-anchor: middle;
@@ -98,7 +98,7 @@
 }
 
 #detailsCityName {
-  font-size: "20";
+  font-size: 20;
   font-weight: bold;
   fill: "#ffffff";
   text-anchor: middle;

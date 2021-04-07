@@ -18,6 +18,11 @@ const isWeatherEnabled = () => {
   return weatherEnabled === "true";
 }
 
+const isHRIconDisabled = () => {
+  const hrEnabled = settingsStorage.getItem("disableHRToggle");
+  return hrEnabled === "true";
+}
+
 const getWeatherCityName = () => {
   const weatherCitySetting = JSON.parse(settingsStorage.getItem("weatherCity"));
   return weatherCitySetting ? weatherCitySetting.name : '';
@@ -270,7 +275,7 @@ const returnStatsSettingsValues = () => {
 const returnHRToggleValue = () => {
   messaging.peerSocket.send({
     command: commands.disableHRSetting,
-    disabled: settingsStorage.getItem("disableHRToggle") === "true"
+    disabled: isHRIconDisabled()
   });
 }
 
@@ -319,7 +324,7 @@ settingsStorage.onchange = (evt) => {
     case 'disableHRToggle':
       messaging.peerSocket.send({
         command: commands.disableHRSetting,
-        disabled: settingsStorage.getItem("disableHRToggle") === "true"
+        disabled: isHRIconDisabled()
       });
     default:
       queryTodayOpenWeather();
