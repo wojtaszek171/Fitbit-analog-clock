@@ -28,16 +28,25 @@ const getTemperatureUnit = () => {
   return temperatureUnit ? temperatureUnit.values[0].value : tempIds.c;
 }
 
-const queryTodayOpenWeather = () => {
+const getAPIKey = () => {
   const weatherApiSetting = JSON.parse(settingsStorage.getItem("weatherApiKey"));
-  const API_KEY = weatherApiSetting ? weatherApiSetting.name : '';
+  return weatherApiSetting ? weatherApiSetting.name : '';
+}
+
+const getUpdateEvery = () => {
   const updateEverySetting = JSON.parse(settingsStorage.getItem("updateEvery"));
-  const updateEvery = updateEverySetting ? updateEverySetting.values[0].value : 30;
+  return updateEverySetting ? updateEverySetting.values[0].value : 30;
+}
+
+const queryTodayOpenWeather = () => {
+  const API_KEY = getAPIKey();
+  const updateEvery = getUpdateEvery();
   const temperatureUnit = getTemperatureUnit();
+  const weatherConfigured = isWeatherConfigured();
 
   let weather = {
     command: commands.todayWeather,
-    displayWeather: isWeatherConfigured(),
+    displayWeather: weatherConfigured,
     hasApi: API_KEY.length > 0,
     cityName: '',
     temperature: '',
@@ -47,21 +56,21 @@ const queryTodayOpenWeather = () => {
     temperatureUnit
   };
 
-  if (isWeatherConfigured()) {
-    let parameters = "weather";
+  if (weatherConfigured) {
+    let parameters = "weather?units=";
         
     switch (temperatureUnit) {
       case tempIds.f:
-        parameters += "?units=imperial";
+        parameters += "imperial";
         break;
       case tempIds.k:
-        parameters += "?units=standard";
+        parameters += "standard";
         break;
       case tempIds.c:
-        parameters += "?units=metric";
+        parameters += "metric";
         break;
       default:
-        parameters += "?units=metric";
+        parameters += "metric";
         break;
     }
 
@@ -112,33 +121,33 @@ const fetchTodayWeather = (parameters, API_KEY, weather) => {
 };
 
 const query5daysOpenWeather = () => {
-  const API_KEY = JSON.parse(settingsStorage.getItem("weatherApiKey")).name ? JSON.parse(settingsStorage.getItem("weatherApiKey")).name : '';
-
+  const API_KEY = getAPIKey();
   const temperatureUnit = getTemperatureUnit();
+  const weatherConfigured = isWeatherConfigured();
 
   let message = {
     command: commands.forecastWeather,
-    displayWeather: isWeatherConfigured(),
+    displayWeather: weatherConfigured,
     cityName: '',
     error: null,
     temperatureUnit
   };
 
-  if (isWeatherConfigured()) {
-    let parameters = "";
-
+  if (weatherConfigured) {
+    let parameters = "weather?units=";
+        
     switch (temperatureUnit) {
       case tempIds.f:
-        parameters += "?units=imperial";
+        parameters += "imperial";
         break;
       case tempIds.k:
-        parameters += "?units=standard";
+        parameters += "standard";
         break;
       case tempIds.c:
-        parameters += "?units=metric";
+        parameters += "metric";
         break;
       default:
-        parameters += "?units=metric";
+        parameters += "metric";
         break;
     }
                     
