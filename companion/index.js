@@ -16,7 +16,7 @@ const queryTodayOpenWeather = () => {
 
   let weather = {
     command: commands.todayWeather,
-    enabled: weatherEnabled,
+    displayWeather: !!(weatherEnabled && (cityName.length || gpsEnabled === "true")),
     hasApi: API_KEY.length > 0,
     cityName: '',
     temperature: '',
@@ -107,7 +107,7 @@ const query5daysOpenWeather = () => {
 
   let message = {
     command: commands.forecastWeather,
-    enabled: weatherEnabled,
+    displayWeather: !!(weatherEnabled && API_KEY.length && (cityName.length || gpsEnabled === "true")),
     cityName: '',
     error: null,
     temperatureUnit: temperatureUnit ? temperatureUnit.values[0].value : 2

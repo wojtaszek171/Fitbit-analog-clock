@@ -42,6 +42,7 @@ const ltStat = document.getElementById("ltStat");
 const lbStat = document.getElementById("lbStat");
 const rbStat = document.getElementById("rbStat");
 const heartRateSection = document.getElementById("heartRate");
+const minutesLayer = document.getElementById("minutesLayer");
 
 let hrm = null; //heart rate sensor data
 let bodyPresence = null; //body presence sensor data
@@ -66,37 +67,20 @@ const secondsToAngle = (seconds) => {
   return (360 / 60) * seconds;
 }
 
-const setAodListener = () => {
-  if (display.aodAvailable && display.aodActive) {
-    display.aodAllowed = true;
-
-    const rtStatSection = document.getElementById("rtStat");
-    const minutesLayer = document.getElementById("minutesLayer");
-
-    display.addEventListener("change", () => {
-      if (!display.aodActive && display.on) {
-        container.value = 0;
-        clock.granularity = "seconds";
-        secHand.style.display = "inline";
-        weatherSection.style.display = "inline";
-        heartRateSection.style.display = "inline";
-        rtStatSection.style.display = "inline";
-        minutesLayer.style.display = "inline";
-        hrm.start();
-        bodyPresence.start();
-      } else {
-        clock.granularity = "minutes";
-        secHand.style.display = "none";
-        weatherSection.style.display = "none";
-        heartRateSection.style.display = "none";
-        rtStatSection.style.display = "none";
-        minutesLayer.style.display = "none";
-        hrm.stop();
-        bodyPresence.stop();
-      }
-    });
-  }
-};
+const setDisplayListener = () => {
+  display.addEventListener("change", () => {
+    if (display.on) {
+      clock.granularity = "seconds";
+      hrm.start();
+      bodyPresence.start();
+    } else {
+      container.value = 0;
+      clock.granularity = "minutes";
+      hrm.stop();
+      bodyPresence.stop();
+    }
+  });
+}
 
 const handleClockTick = () => {
   let todayDate = new Date();
@@ -239,7 +223,7 @@ const setSettingsListener = () => {
 
     switch (data.command) {
       case commands.todayWeather:
-        if (data.enabled === 'true' && data.hasApi)  {
+        if (data.displayWeather)  {
           weatherSection.style.display = "inline";
           weatherView.style.display = "inline";
           reloadWeatherButton.style.display = "inline";
@@ -269,7 +253,7 @@ const setSettingsListener = () => {
         }
         break;
       case commands.forecastWeather:
-        if (data.enabled === 'true')  {
+        if (data.displayWeather)  {
           detailsCityName.text = data.cityName;
         }
         if (data.svgElement) {
@@ -371,7 +355,7 @@ const getStatFunction = (stat) => {
     case statsIds.cals:
       return () => today.adjusted.calories || 0;
     case statsIds.dist:
-      return () => today.adjusted.distance || 0;
+      return () => today.adjusted.distance || 0; 
     case statsIds.hr:
       return () => (hrm && bodyPresence.present) ? hrm.heartRate : '--';
     case statsIds.azm:
@@ -448,7 +432,7 @@ const setAllListeners = () => {
 
   setSettingsListener();
   setHeartListener();
-  setAodListener();
+  setDisplayListener();
   setButtonsListeners();
 
   clock.ontick = () => handleClockTick();
