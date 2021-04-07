@@ -4,51 +4,72 @@ import { geolocation } from "geolocation";
 import { commands, statsIds, tempIds } from "../globals";
 import { device } from "peer";
 
+const isWeatherConfigured = () => {
+  return !!(isWeatherEnabled() && (getWeatherCityName().length || isGPSEnabled()))
+}
+
+const isGPSEnabled = () => {
+  const gpsEnabled = settingsStorage.getItem("gpsEnabled");
+  return gpsEnabled === "true";
+}
+
+const isWeatherEnabled = () => {
+  const weatherEnabled = settingsStorage.getItem("enableWeather");
+  return weatherEnabled === "true";
+}
+
+const getWeatherCityName = () => {
+  const weatherCitySetting = JSON.parse(settingsStorage.getItem("weatherCity"));
+  return weatherCitySetting ? weatherCitySetting.name : '';
+}
+
+const getTemperatureUnit = () => {
+  const temperatureUnit = JSON.parse(settingsStorage.getItem("temperatureUnit"));
+  return temperatureUnit ? temperatureUnit.values[0].value : tempIds.c;
+}
+
 const queryTodayOpenWeather = () => {
   const weatherApiSetting = JSON.parse(settingsStorage.getItem("weatherApiKey"));
   const API_KEY = weatherApiSetting ? weatherApiSetting.name : '';
-
-  const weatherCitySetting = JSON.parse(settingsStorage.getItem("weatherCity"));
-  let cityName = weatherCitySetting ? weatherCitySetting.name : '';
-  const weatherEnabled = settingsStorage.getItem("enableWeather");
-  const gpsEnabled = settingsStorage.getItem("gpsEnabled");
-  const temperatureUnit = JSON.parse(settingsStorage.getItem("temperatureUnit"));
+  const updateEverySetting = JSON.parse(settingsStorage.getItem("updateEvery"));
+  const updateEvery = updateEverySetting ? updateEverySetting.values[0].value : 30;
+  const temperatureUnit = getTemperatureUnit();
 
   let weather = {
     command: commands.todayWeather,
-    displayWeather: !!(weatherEnabled && (cityName.length || gpsEnabled === "true")),
+    displayWeather: isWeatherConfigured(),
     hasApi: API_KEY.length > 0,
     cityName: '',
     temperature: '',
     weatherElement: {},
-    updateEveryMinutes: null,
+    updateEveryMinutes: updateEvery,
     error: null,
-    temperatureUnit: temperatureUnit ? temperatureUnit.values[0].value : 2
+    temperatureUnit
   };
 
-  if (weatherEnabled === 'true' && API_KEY && (cityName || gpsEnabled === 'true')) {
-    let ENDPOINT = "https://api.openweathermap.org/data/2.5/weather";
+  if (isWeatherConfigured()) {
+    let parameters = "weather";
         
-    switch (temperatureUnit ? temperatureUnit.values[0].value : tempIds.c) {
+    switch (temperatureUnit) {
       case tempIds.f:
-        ENDPOINT += "?units=imperial";
+        parameters += "?units=imperial";
         break;
       case tempIds.k:
-        ENDPOINT += "?units=standard";
+        parameters += "?units=standard";
         break;
       case tempIds.c:
-        ENDPOINT += "?units=metric";
+        parameters += "?units=metric";
         break;
       default:
-        ENDPOINT += "?units=metric";
+        parameters += "?units=metric";
         break;
     }
 
-    if (gpsEnabled === 'true') {
+    if (isGPSEnabled()) {
       geolocation.getCurrentPosition((position) => {
-        ENDPOINT += "&lat="+ position.coords.latitude +"&lon=" + position.coords.longitude;
+        parameters += "&lat="+ position.coords.latitude +"&lon=" + position.coords.longitude;
 
-        fetchTodayWeather(ENDPOINT, API_KEY, weather);
+        fetchTodayWeather(parameters, API_KEY, weather);
       },
       (error) => {
         weather.error = "Failed to use gps";
@@ -56,21 +77,17 @@ const queryTodayOpenWeather = () => {
       }, {
         timeout: 60 * 1000
       });
-
     } else {
-      ENDPOINT += "&q=" + cityName;
-      fetchTodayWeather(ENDPOINT, API_KEY, weather);
+      parameters += "&q=" + getWeatherCityName();
+      fetchTodayWeather(parameters, API_KEY, weather);
     }
   } else {
     messaging.peerSocket.send(weather);
   }
 }
 
-const fetchTodayWeather = (ENDPOINT, API_KEY, weather) => {
-  const updateEverySetting = JSON.parse(settingsStorage.getItem("updateEvery"));
-  const updateEvery = updateEverySetting ? updateEverySetting.values[0].value : 30;
-
-  fetch(`${ENDPOINT}&APPID=${API_KEY}`)
+const fetchTodayWeather = (parameters, API_KEY, weather) => {
+  fetch(`https://api.openweathermap.org/data/2.5/${parameters}&APPID=${API_KEY}`)
   .then((response) => {
       response.json()
       .then((data) => {
@@ -80,13 +97,11 @@ const fetchTodayWeather = (ENDPOINT, API_KEY, weather) => {
 
         weather.temperature = data.main.temp;
         weather.weatherElement = data.weather[0];
-        weather.updateEveryMinutes = updateEvery;
         if (data.name) {
           weather.cityName = data.name;
         } else {
           weather.cityName = "????";
         }
-        // Send the weather data to the device          
         messaging.peerSocket.send(weather);
       });
   })
@@ -99,43 +114,39 @@ const fetchTodayWeather = (ENDPOINT, API_KEY, weather) => {
 const query5daysOpenWeather = () => {
   const API_KEY = JSON.parse(settingsStorage.getItem("weatherApiKey")).name ? JSON.parse(settingsStorage.getItem("weatherApiKey")).name : '';
 
-  const cityNameSetting = JSON.parse(settingsStorage.getItem("weatherCity"));
-  let cityName = cityNameSetting ? cityNameSetting.name : '';
-  const weatherEnabled = settingsStorage.getItem("enableWeather");
-  const gpsEnabled = settingsStorage.getItem("gpsEnabled");
-  const temperatureUnit = JSON.parse(settingsStorage.getItem("temperatureUnit"));
+  const temperatureUnit = getTemperatureUnit();
 
   let message = {
     command: commands.forecastWeather,
-    displayWeather: !!(weatherEnabled && API_KEY.length && (cityName.length || gpsEnabled === "true")),
+    displayWeather: isWeatherConfigured(),
     cityName: '',
     error: null,
-    temperatureUnit: temperatureUnit ? temperatureUnit.values[0].value : 2
+    temperatureUnit
   };
 
-  if (weatherEnabled === 'true' && API_KEY && (cityName || gpsEnabled === 'true')) {
-    let ENDPOINT = "https://api.openweathermap.org/data/2.5/forecast";
+  if (isWeatherConfigured()) {
+    let parameters = "";
 
-    switch (temperatureUnit ? temperatureUnit.values[0].value : tempIds.c) {
+    switch (temperatureUnit) {
       case tempIds.f:
-        ENDPOINT += "?units=imperial";
+        parameters += "?units=imperial";
         break;
       case tempIds.k:
-        ENDPOINT += "?units=standard";
+        parameters += "?units=standard";
         break;
       case tempIds.c:
-        ENDPOINT += "?units=metric";
+        parameters += "?units=metric";
         break;
       default:
-        ENDPOINT += "?units=metric";
+        parameters += "?units=metric";
         break;
     }
                     
-    if (gpsEnabled === 'true') {      
+    if (isGPSEnabled()) {      
       geolocation.getCurrentPosition((position) => {
-        ENDPOINT += "&lat="+ position.coords.latitude +"&lon=" + position.coords.longitude;
+        parameters += "&lat="+ position.coords.latitude +"&lon=" + position.coords.longitude;
 
-        fetch5daysWeather(ENDPOINT, API_KEY, message);
+        fetch5daysWeather(parameters, API_KEY, message);
       },
       (error) => {
         message.error = "Failed to use gps";
@@ -145,19 +156,19 @@ const query5daysOpenWeather = () => {
       });
 
     } else {
-      ENDPOINT += "&q=" + cityName;
-      fetch5daysWeather(ENDPOINT, API_KEY, message);
+      parameters += "&q=" + getWeatherCityName();
+      fetch5daysWeather(parameters, API_KEY, message);
     }
   } else {
     messaging.peerSocket.send(message);
   }
 }
 
-const fetch5daysWeather = (ENDPOINT, API_KEY, message) => {
+const fetch5daysWeather = (parameters, API_KEY, message) => {
   let weatherDaysMessage = [];
-  const temperatureUnit = JSON.parse(settingsStorage.getItem("temperatureUnit"));
+  const temperatureUnit = getTemperatureUnit();
 
-  fetch(`${ENDPOINT}&APPID=${API_KEY}`)
+  fetch(`https://api.openweathermap.org/data/2.5/forecast${parameters}&APPID=${API_KEY}`)
   .then((response) => {
       response.json()
       .then((data) => {      
@@ -198,7 +209,7 @@ const fetch5daysWeather = (ENDPOINT, API_KEY, message) => {
             svgElement: (i+1).toString(),
             command: commands.forecastWeather,
             weatherDayMessage,
-            temperatureUnit: temperatureUnit ? temperatureUnit.values[0].value : 2
+            temperatureUnit
           });
         });
       });
@@ -231,7 +242,6 @@ const displayApiError = (data) => {
 }
 
 const returnStatsSettingsValues = () => {
-  const weatherEnabled = settingsStorage.getItem("enableWeather") === "true";
   const ltStat = JSON.parse(settingsStorage.getItem("ltStatSel"));
   const rtStat = JSON.parse(settingsStorage.getItem("rtStatSel"));
   const lbStat = JSON.parse(settingsStorage.getItem("lbStatSel"));
@@ -240,7 +250,7 @@ const returnStatsSettingsValues = () => {
   messaging.peerSocket.send({
     command: commands.getStatsSettings,
     payload: {
-      ltStat: (ltStat && ltStat.values.length && !weatherEnabled) ? ltStat.values[0].value : undefined,
+      ltStat: (ltStat && ltStat.values.length && !isWeatherEnabled()) ? ltStat.values[0].value : undefined,
       rtStat: (rtStat && rtStat.values.length) ? rtStat.values[0].value : statsIds.steps,
       lbStat: (lbStat && lbStat.values.length) ? lbStat.values[0].value : undefined,
       rbStat: (rbStat && rbStat.values.length) ? rbStat.values[0].value : undefined
