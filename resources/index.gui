@@ -88,6 +88,9 @@
   <use id="container" href="#panoramaview">
     <use id="clockView" href="#panoramaview-item">
       <svg viewport-fill="#111111">
+        <section x="20" y="20">
+          <image id="notConnectedIcon" fill="#ffffff" y="$" width="36" height="36" href="no_bt.png" />
+        </section>
         <section x="20" y="20" height="36" width="100%">
           <g id='weather'>
             <text id="cityname" class="left18pxbold" x="8" y="20" width="100% - 150" />

@@ -105,6 +105,10 @@
   text-length: 32;
 }
 
+#notConnectedIcon {
+  display: none;
+}
+
 .statsText {
   fill: "#ffffff";
   font-size: 20;

@@ -279,6 +279,13 @@ const returnHRToggleValue = () => {
   });
 }
 
+const returnWeatherConfiguredValue = () => {
+  messaging.peerSocket.send({
+    command: commands.getWeatherConfigured,
+    weatherConfigured: isWeatherConfigured()
+  });
+}
+
 settingsStorage.setItem("modelId", device.modelId);
 
 messaging.peerSocket.onmessage = (evt) => {
@@ -298,6 +305,9 @@ messaging.peerSocket.onmessage = (evt) => {
       break;
     case commands.disableHRSetting:
       returnHRToggleValue();
+      break;
+    case commands.getWeatherConfigured:
+      returnWeatherConfiguredValue();
       break;
     default:
       break;
@@ -319,7 +329,6 @@ settingsStorage.onchange = (evt) => {
         command: commands.settingsChanged,
         payload: evt
       });
-      queryTodayOpenWeather();
       break;
     case 'disableHRToggle':
       messaging.peerSocket.send({

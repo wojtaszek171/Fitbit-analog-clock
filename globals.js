@@ -20,6 +20,7 @@ export const commands = {
     todayWeather: 'todayWeather',
     forecastWeather: 'forecastWeather',
     getStatsSettings: 'getStatsSettings',
+    getWeatherConfigured: 'getWeatherConfigured',
     settingsChanged: 'settingsChanged',
     disableHRSetting: 'disableHRSetting'
 }

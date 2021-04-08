@@ -23,6 +23,7 @@ const reloadWeatherButton = document.getElementById("weatherRefreshButton");
 const weatherButton = document.getElementById("weatherButton");
 const statsButton = document.getElementById("showStatsButton");
 const weatherButtonIcon = document.getElementById("weatherButtonIcon");
+const notConnectedIcon = document.getElementById("notConnectedIcon");
 const ltStatText = document.getElementById("ltStatText");
 const rtStatText = document.getElementById("rtStatText");
 const lbStatText = document.getElementById("lbStatText");
@@ -152,6 +153,16 @@ const fetchHRToggleSetting = () => {
   }
 }
 
+const fetchWeatherConfiguredSetting = () => {
+  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+    messaging.peerSocket.send({
+      command: commands.getWeatherConfigured
+    });
+  } else {
+    displayToast("Failed loading settings. Open Fitbit app on your phone.");
+  }
+}
+
 const fetch5daysWeather = () => {
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
     messaging.peerSocket.send({
@@ -202,13 +213,22 @@ const displayStatsDetails = () => {
 }
 
 const setSettingsListener = () => {
+  if (getSettingFromFile("weatherConfigured")) {
+    notConnectedIcon.style.display = "inline";
+  }
+
   messaging.peerSocket.onopen = () => {
+    notConnectedIcon.style.display = "none";
     fetchStatsSettings();
     fetchHRToggleSetting();
+    fetchWeatherConfiguredSetting();
+  }
 
-    if (getSettingFromFile('weatherConfigured')) {
-      fetchTodayWeather();
+  messaging.peerSocket.onclose = () => {
+    if (ltStat.style.display === "none" && getSettingFromFile("weatherConfigured")) {
+      notConnectedIcon.style.display = "inline";
     }
+    enableWeatherSection(false);
   }
 
   const weatherInterval = null;
@@ -281,10 +301,6 @@ const setSettingsListener = () => {
         }
         break;
       case commands.getStatsSettings:
-        ltStat.style.display = "none";
-        lbStat.style.display = "none";
-        rbStat.style.display = "none";
-
         const { payload } = data;
 
         updateSettingsFile({ cornerStats: payload });
@@ -293,11 +309,19 @@ const setSettingsListener = () => {
       case commands.settingsChanged:
         fetchStatsSettings();
         fetchHRToggleSetting();
+        fetchWeatherConfiguredSetting();
         break;
       case commands.disableHRSetting:
         updateSettingsFile({ hrIconEnabled: !data.disabled });
         showHRIcon(!data.disabled);
         break;
+      case commands.getWeatherConfigured:
+        const { weatherConfigured } = data;
+        updateSettingsFile({ weatherConfigured });
+        enableWeatherSection(weatherConfigured);
+        if (weatherConfigured) {
+          fetchTodayWeather();
+        }
       default:
         break;
     }
@@ -313,6 +337,10 @@ const showHRIcon = (hrIconEnabled) => {
 }
 
 const initializeCornerSettings = (payload) => {
+  ltStat.style.display = "none";
+  lbStat.style.display = "none";
+  rbStat.style.display = "none";
+
   statsArr = [...Object.keys(payload).reduce((acc, key) => {
     if (payload[key]) {
       acc.push({
@@ -326,6 +354,7 @@ const initializeCornerSettings = (payload) => {
   }, [])];
 
   statsArr.forEach((stat) => {
+    if (stat.value) {
       switch (stat.key) {
         case 'ltStat':
           ltStat.style.display = "inline";
@@ -342,8 +371,10 @@ const initializeCornerSettings = (payload) => {
 
       const statImage = document.getElementById(`${stat.key}Image`);
       statImage.href = `statsimages/${stat.stat}.png`;
-      updateCornerStats();
+    }
   });
+
+  updateCornerStats();
 }
 
 const getStatFunction = (stat) => {
@@ -435,7 +466,7 @@ const recoverLastSettings = () => {
   initializeCornerSettings(cornerStats ? cornerStats : {});
   showHRIcon(!!getSettingFromFile('hrIconEnabled'));
 
-  enableWeatherSection(getSettingFromFile('weatherConfigured'));
+  enableWeatherSection(getSettingFromFile(false)); //disable weather at start
 }
 
 const setAllListeners = () => {
