@@ -1,7 +1,7 @@
 import * as messaging from "messaging";
 import { settingsStorage } from "settings";
 import { geolocation } from "geolocation";
-import { commands, statsIds, tempIds } from "../globals";
+import { companionCommands, appCommands, statsIds, tempIds } from "../globals";
 import { device } from "peer";
 
 const isWeatherConfigured = () => {
@@ -50,7 +50,7 @@ const queryTodayOpenWeather = () => {
   const weatherConfigured = isWeatherConfigured();
 
   let weather = {
-    command: commands.todayWeather,
+    command: companionCommands.todayWeather,
     displayWeather: weatherConfigured,
     hasApi: API_KEY.length > 0,
     cityName: '',
@@ -131,7 +131,7 @@ const query5daysOpenWeather = () => {
   const weatherConfigured = isWeatherConfigured();
 
   let message = {
-    command: commands.forecastWeather,
+    command: companionCommands.forecastWeather,
     displayWeather: weatherConfigured,
     cityName: '',
     error: null,
@@ -221,7 +221,7 @@ const fetch5daysWeather = (parameters, API_KEY, message) => {
         weatherDaysMessage.forEach((weatherDayMessage, i) => {
           messaging.peerSocket.send({
             svgElement: (i+1).toString(),
-            command: commands.forecastWeather,
+            command: companionCommands.forecastWeather,
             weatherDayMessage,
             temperatureUnit
           });
@@ -262,7 +262,7 @@ const returnStatsSettingsValues = () => {
   const rbStat = JSON.parse(settingsStorage.getItem("rbStatSel"));
 
   messaging.peerSocket.send({
-    command: commands.getStatsSettings,
+    command: companionCommands.statsSettings,
     payload: {
       ltStat: (ltStat && ltStat.values.length && !isWeatherEnabled()) ? ltStat.values[0].value : undefined,
       rtStat: (rtStat && rtStat.values.length) ? rtStat.values[0].value : statsIds.steps,
@@ -274,14 +274,14 @@ const returnStatsSettingsValues = () => {
 
 const returnHRToggleValue = () => {
   messaging.peerSocket.send({
-    command: commands.disableHRSetting,
+    command: companionCommands.disableHRSetting,
     disabled: isHRIconDisabled()
   });
 }
 
 const returnWeatherConfiguredValue = () => {
   messaging.peerSocket.send({
-    command: commands.getWeatherConfigured,
+    command: companionCommands.weatherConfigured,
     weatherConfigured: isWeatherConfigured()
   });
 }
@@ -294,19 +294,19 @@ messaging.peerSocket.onmessage = (evt) => {
   }
 
   switch (evt.data.command) {
-    case commands.todayWeather:
+    case appCommands.todayWeather:
       queryTodayOpenWeather();
       break;
-    case commands.forecastWeather:
+    case appCommands.forecastWeather:
       query5daysOpenWeather();
       break;
-    case commands.getStatsSettings:
+    case appCommands.statsSettings:
       returnStatsSettingsValues();
       break;
-    case commands.disableHRSetting:
+    case appCommands.disableHRSetting:
       returnHRToggleValue();
       break;
-    case commands.getWeatherConfigured:
+    case appCommands.weatherConfigured:
       returnWeatherConfiguredValue();
       break;
     default:
@@ -326,13 +326,13 @@ settingsStorage.onchange = (evt) => {
     case 'rbStatSel':
     case 'enableWeather':
       messaging.peerSocket.send({
-        command: commands.settingsChanged,
+        command: companionCommands.settingsChanged,
         payload: evt
       });
       break;
     case 'disableHRToggle':
       messaging.peerSocket.send({
-        command: commands.disableHRSetting,
+        command: companionCommands.disableHRSetting,
         disabled: isHRIconDisabled()
       });
     default:

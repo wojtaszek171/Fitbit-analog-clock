@@ -7,7 +7,7 @@ import { display } from "display";
 import { today } from 'user-activity';
 import { preferences } from "user-settings";
 import { me as device } from "device";
-import { commands, IONIC_MODEL_NUMBER, statsIds, tempIds, VERSA_LITE_MODEL_NUMBER } from "../globals";
+import { companionCommands, appCommands, IONIC_MODEL_NUMBER, statsIds, tempIds, VERSA_LITE_MODEL_NUMBER } from "../globals";
 import { getSettingFromFile, initializeSettings, updateSettingsFile } from "./settingsService";
 
 // global variables
@@ -126,7 +126,7 @@ const fetchTodayWeather = () => {
   degrees.text = '';
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
     messaging.peerSocket.send({
-      command: commands.todayWeather
+      command: appCommands.todayWeather
     });
   } else {
     displayToast("Failed loading weather. Open Fitbit app on your phone.");
@@ -136,7 +136,7 @@ const fetchTodayWeather = () => {
 const fetchStatsSettings = () => {
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
     messaging.peerSocket.send({
-      command: commands.getStatsSettings
+      command: appCommands.statsSettings
     });
   } else {
     displayToast("Failed loading settings. Open Fitbit app on your phone.");
@@ -146,7 +146,7 @@ const fetchStatsSettings = () => {
 const fetchHRToggleSetting = () => {
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
     messaging.peerSocket.send({
-      command: commands.disableHRSetting
+      command: appCommands.disableHRSetting
     });
   } else {
     displayToast("Failed loading settings. Open Fitbit app on your phone.");
@@ -156,7 +156,7 @@ const fetchHRToggleSetting = () => {
 const fetchWeatherConfiguredSetting = () => {
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
     messaging.peerSocket.send({
-      command: commands.getWeatherConfigured
+      command: appCommands.weatherConfigured
     });
   } else {
     displayToast("Failed loading settings. Open Fitbit app on your phone.");
@@ -166,7 +166,7 @@ const fetchWeatherConfiguredSetting = () => {
 const fetch5daysWeather = () => {
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
     messaging.peerSocket.send({
-      command: commands.forecastWeather
+      command: appCommands.forecastWeather
     });
   } else {
     displayToast("Failed loading weather. Open Fitbit app on your phone.");
@@ -240,7 +240,7 @@ const setSettingsListener = () => {
     }
 
     switch (data.command) {
-      case commands.todayWeather:
+      case companionCommands.todayWeather:
         updateSettingsFile({ weatherConfigured: data.displayWeather });
         enableWeatherSection(data.displayWeather);
         if (data.displayWeather) {
@@ -259,7 +259,7 @@ const setSettingsListener = () => {
           }
         }
         break;
-      case commands.forecastWeather:
+      case companionCommands.forecastWeather:
         updateSettingsFile({ weatherConfigured: data.displayWeather });
         if (data.displayWeather)  {
           detailsCityName.text = data.cityName;
@@ -300,22 +300,22 @@ const setSettingsListener = () => {
           });
         }
         break;
-      case commands.getStatsSettings:
+      case companionCommands.statsSettings:
         const { payload } = data;
 
         updateSettingsFile({ cornerStats: payload });
         initializeCornerSettings(payload);
         break;
-      case commands.settingsChanged:
+      case companionCommands.settingsChanged:
         fetchStatsSettings();
         fetchHRToggleSetting();
         fetchWeatherConfiguredSetting();
         break;
-      case commands.disableHRSetting:
+      case companionCommands.disableHRSetting:
         updateSettingsFile({ hrIconEnabled: !data.disabled });
         showHRIcon(!data.disabled);
         break;
-      case commands.getWeatherConfigured:
+      case companionCommands.weatherConfigured:
         const { weatherConfigured } = data;
         updateSettingsFile({ weatherConfigured });
         enableWeatherSection(weatherConfigured);

@@ -1,4 +1,5 @@
 import * as fs from "fs";
+import { statsIds } from "../globals";
 
 const SETTINGS_FILE = 'settings.txt';
 
@@ -11,7 +12,9 @@ export const initializeSettings = () => {
 
     const settingsKeys = {
         weatherConfigured: false,
-        cornerStats: {},
+        cornerStats: {
+            rtStat: statsIds.steps
+        },
         hrIconEnabled: false
     };
 

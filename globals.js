@@ -16,11 +16,20 @@ export const tempIds = {
     c: 'c',
 }
 
-export const commands = {
-    todayWeather: 'todayWeather',
-    forecastWeather: 'forecastWeather',
-    getStatsSettings: 'getStatsSettings',
-    getWeatherConfigured: 'getWeatherConfigured',
-    settingsChanged: 'settingsChanged',
-    disableHRSetting: 'disableHRSetting'
+export const appCommands = {
+    todayWeather: 'a_todayWeather',
+    forecastWeather: 'a_forecastWeather',
+    statsSettings: 'a_statsSettings',
+    weatherConfigured: 'a_weatherConfigured',
+    settingsChanged: 'a_settingsChanged',
+    disableHRSetting: 'a_disableHRSetting'
+}
+
+export const companionCommands = {
+    todayWeather: 'c_todayWeather',
+    forecastWeather: 'c_forecastWeather',
+    statsSettings: 'c_statsSettings',
+    weatherConfigured: 'c_weatherConfigured',
+    settingsChanged: 'c_settingsChanged',
+    disableHRSetting: 'c_disableHRSetting'
 }
