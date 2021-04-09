@@ -1,6 +1,10 @@
 export const IONIC_MODEL_NUMBER = '27';
 export const VERSA_LITE_MODEL_NUMBER = '38';
 
+export const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+export const daysNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
 export const statsIds = {
     steps: 'steps',
     cals: 'cals',
@@ -39,5 +43,6 @@ export const errorMessages = {
     wrongApiKey: 'Invalid weather API key',
     apiLimit: 'You reached API limit',
     weatherUnknown: 'Unknown weather server error',
-    gpsFail: 'Failed to use gps'
+    gpsFail: 'Failed to use gps',
+    closedSocket: 'Communication problem. Open Fitbit app on your phone.'
 }

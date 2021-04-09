@@ -7,13 +7,9 @@ import { display } from 'display';
 import { today } from 'user-activity';
 import { preferences } from 'user-settings';
 import { me as device } from 'device';
-import { companionCommands, appCommands, IONIC_MODEL_NUMBER, statsIds, tempIds, VERSA_LITE_MODEL_NUMBER } from '../globals';
+import { monthNames, daysNames, companionCommands, appCommands, IONIC_MODEL_NUMBER, statsIds, tempIds, VERSA_LITE_MODEL_NUMBER, errorMessages } from '../globals';
 import { getSettingFromFile, initializeSettings, updateSettingsFile } from './settingsService';
 
-// global variables
-const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const daysNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const dateText = document.getElementById('dateText');
 const weatherIcon = document.getElementById('weatherIcon');
 const cityname = document.getElementById('cityname');
@@ -24,13 +20,17 @@ const weatherButton = document.getElementById('weatherButton');
 const statsButton = document.getElementById('showStatsButton');
 const weatherButtonIcon = document.getElementById('weatherButtonIcon');
 const notConnectedIcon = document.getElementById('notConnectedIcon');
+const statSteps = document.getElementById('statsSteps');
+const statCals = document.getElementById('statsCals');
+const statDist = document.getElementById('statsDist');
+const statHr = document.getElementById('statsHr');
+const statAzm = document.getElementById('statsAzm');
+const statFloors = document.getElementById('statsFloors');
 const ltStatText = document.getElementById('ltStatText');
 const rtStatText = document.getElementById('rtStatText');
 const lbStatText = document.getElementById('lbStatText');
 const rbStatText = document.getElementById('rbStatText');
-const toastElement = document.getElementById('toastUse');
 const statsDetailsElement = document.getElementById('statsDetailsUse');
-const toastText =   document.getElementById('toastText');
 const goToClockButton = document.getElementById('goToClockButton');
 const weatherView = document.getElementById('weatherView');
 const hourHand = document.getElementById('hours');
@@ -45,9 +45,9 @@ const rbStat = document.getElementById('rbStat');
 const heartRateSection = document.getElementById('heartRate');
 const minutesLayer = document.getElementById('minutesLayer');
 
-let hrm = null; //heart rate sensor data
-let bodyPresence = null; //body presence sensor data
-let statsArr = [];
+let hrm = null; // heart rate sensor data
+let bodyPresence = null; // body presence sensor data
+let statsArr = []; // corner statistics settings
 
 let toastTimeout = null;
 let statsDetailsTimeout = null;
@@ -118,62 +118,55 @@ const updateCornerStats = () => {
   });
 }
 
+const isSocketOpen = () => messaging.peerSocket.readyState === messaging.peerSocket.OPEN;
+
+const sendMessage = (message) => {
+  if (isSocketOpen()) {
+    messaging.peerSocket.send(message);
+  } else {
+    displayToast(errorMessages.closedSocket);
+  }
+}
+
 const fetchTodayWeather = () => {
   weatherButtonIcon.style.display = 'inline';
   weatherButtonIcon.animate('enable');
   cityname.text = '';
   weatherIcon.href = '';
   degrees.text = '';
-  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-    messaging.peerSocket.send({
-      command: appCommands.todayWeather
-    });
-  } else {
-    displayToast('Failed loading weather. Open Fitbit app on your phone.');
-  }
+  sendMessage({
+    command: appCommands.todayWeather
+  });
 }
 
 const fetchStatsSettings = () => {
-  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-    messaging.peerSocket.send({
-      command: appCommands.statsSettings
-    });
-  } else {
-    displayToast('Failed loading settings. Open Fitbit app on your phone.');
-  }
+  sendMessage({
+    command: appCommands.statsSettings
+  });
 }
 
 const fetchHRToggleSetting = () => {
-  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-    messaging.peerSocket.send({
-      command: appCommands.disableHRSetting
-    });
-  } else {
-    displayToast('Failed loading settings. Open Fitbit app on your phone.');
-  }
+  sendMessage({
+    command: appCommands.disableHRSetting
+  });
 }
 
 const fetchWeatherConfiguredSetting = () => {
-  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-    messaging.peerSocket.send({
-      command: appCommands.weatherConfigured
-    });
-  } else {
-    displayToast('Failed loading settings. Open Fitbit app on your phone.');
-  }
+  sendMessage({
+    command: appCommands.weatherConfigured
+  });
 }
 
 const fetch5daysWeather = () => {
-  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-    messaging.peerSocket.send({
-      command: appCommands.forecastWeather
-    });
-  } else {
-    displayToast('Failed loading weather. Open Fitbit app on your phone.');
-  }
+  sendMessage({
+    command: appCommands.forecastWeather
+  });
 }
 
 const displayToast = (message) => {
+  const toastText =   document.getElementById('toastText');
+  const toastElement = document.getElementById('toastUse');
+
   toastText.text = message;
   toastElement.animate('enable'); //show toast
   if(toastTimeout !== null) {
@@ -185,13 +178,6 @@ const displayToast = (message) => {
 }
 
 const displayStatsDetails = () => {
-  const statSteps = document.getElementById('statsSteps');
-  const statCals = document.getElementById('statsCals');
-  const statDist = document.getElementById('statsDist');
-  const statHr = document.getElementById('statsHr');
-  const statAzm = document.getElementById('statsAzm');
-  const statFloors = document.getElementById('statsFloors');
-
   statSteps.text = today.adjusted.steps || 0;
   statCals.text = today.adjusted.calories || 0;
   statDist.text = today.adjusted.distance || 0;
@@ -213,7 +199,7 @@ const displayStatsDetails = () => {
 }
 
 const setSettingsListener = () => {
-  if (getSettingFromFile('weatherConfigured')) {
+  if (getSettingFromFile('weatherConfigured') && messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
     notConnectedIcon.style.display = 'inline';
   }
 
@@ -227,8 +213,8 @@ const setSettingsListener = () => {
   messaging.peerSocket.onclose = () => {
     if (ltStat.style.display === 'none' && getSettingFromFile('weatherConfigured')) {
       notConnectedIcon.style.display = 'inline';
+      enableWeatherSection(false);
     }
-    enableWeatherSection(false);
   }
 
   const weatherInterval = null;
@@ -241,16 +227,17 @@ const setSettingsListener = () => {
 
     switch (data.command) {
       case companionCommands.todayWeather:
-        updateSettingsFile({ weatherConfigured: data.displayWeather });
-        enableWeatherSection(data.displayWeather);
-        if (data.displayWeather) {
-          const updateMinutes = data.updateEveryMinutes ? data.updateEveryMinutes : 30;  
-          if (data.temperature) {
-            const el = data.weatherElement;
-            cityname.text = data.cityName;
+        const { displayWeather, updateEveryMinutes, weatherElement, cityName, temperature } = data;
+        updateSettingsFile({ weatherConfigured: displayWeather });
+        enableWeatherSection(displayWeather);
+        if (displayWeather) {
+          const updateMinutes = updateEveryMinutes || 30;  
+          if (temperature) {
+            const el = weatherElement;
+            cityname.text = cityName;
             document.getElementById('customTextarea');
             weatherIcon.href = 'weatherimages/'+el.icon+'.png';
-            degrees.text = Math.round(data.temperature) + '°';
+            degrees.text = Math.round(temperature) + '°';
             weatherButtonIcon.style.display = 'none';
             if(weatherInterval !== null) {
               clearInterval(weatherInterval);
@@ -260,19 +247,20 @@ const setSettingsListener = () => {
         }
         break;
       case companionCommands.forecastWeather:
-        updateSettingsFile({ weatherConfigured: data.displayWeather });
-        if (data.displayWeather)  {
-          detailsCityName.text = data.cityName;
+        const { displayWeather, cityName, temperature, svgElement: svgKey, weatherDayMessage, temperatureUnit } = data;
+        updateSettingsFile({ weatherConfigured: displayWeather });
+        if (displayWeather)  {
+          detailsCityName.text = cityName;
         }
-        if (data.svgElement) {
-          const messages = data.weatherDayMessage;
+        if (svgKey) {
+          const messages = weatherDayMessage;
           
-          const svgElement = document.getElementById('day'+data.svgElement);
+          const svgElement = document.getElementById('day' + svgKey);
           svgElement.getElementById('dayName').text = daysNames[messages[0].day];
           messages.slice().reverse().forEach((hourWeather, i) => {
             const hourElement = svgElement.getElementById('hour'+i);
             const temperatureElement = hourElement.getElementById('rowWeatherDegrees');            
-            const unit = data.temperatureUnit;
+            const unit = temperatureUnit;
             
             switch (unit) {
               case tempIds.f:
@@ -312,11 +300,14 @@ const setSettingsListener = () => {
         fetchWeatherConfiguredSetting();
         break;
       case companionCommands.disableHRSetting:
-        updateSettingsFile({ hrIconEnabled: !data.disabled });
-        showHRIcon(!data.disabled);
+        const { disabled } = data;
+
+        updateSettingsFile({ hrIconEnabled: !disabled });
+        showHRIcon(!disabled);
         break;
       case companionCommands.weatherConfigured:
         const { weatherConfigured } = data;
+
         updateSettingsFile({ weatherConfigured });
         enableWeatherSection(weatherConfigured);
         if (weatherConfigured) {
