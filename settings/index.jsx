@@ -1,8 +1,8 @@
-import { statsIds, tempIds, VERSA_LITE_MODEL_NUMBER } from "../globals";
+import { statsIds, tempIds, VERSA_LITE_MODEL_NUMBER } from '../globals';
 
 function settingsComponent(props) {
-  const weatherEnabled = props.settings.enableWeather === "true";
-  const gpsEnabled = props.settings.gpsEnabled === "true";
+  const weatherEnabled = props.settings.enableWeather === 'true';
+  const gpsEnabled = props.settings.gpsEnabled === 'true';
 
   let cornerOptions = [
     { name: 'Disabled', value: undefined },
@@ -21,7 +21,7 @@ function settingsComponent(props) {
     { name: 'Active minutes', value: statsIds.azm }
   ];
 
-  if (props.settingsStorage.getItem("modelId") !== VERSA_LITE_MODEL_NUMBER) {
+  if (props.settingsStorage.getItem('modelId') !== VERSA_LITE_MODEL_NUMBER) {
     cornerOptions.push({ name: 'Floors', value: statsIds.floors });
     rtOptions.push({ name: 'Floors', value: statsIds.floors });
   }
@@ -31,35 +31,35 @@ function settingsComponent(props) {
       <Section
         title=
         {
-          <Text bold align="center">
+          <Text bold align='center'>
             Display statistic
           </Text>
         }
       >
         <Select
-          settingsKey="ltStatSel"
+          settingsKey='ltStatSel'
           label={`Left top: ${weatherEnabled ? 'Weather' : ''}`}
           options={cornerOptions}
           disabled={weatherEnabled}
         />
         <Select
-          settingsKey="rtStatSel"
-          label="Right top:"
+          settingsKey='rtStatSel'
+          label='Right top:'
           options={rtOptions}
         />
         <Select
-          settingsKey="lbStatSel"
-          label="Left bottom:"
+          settingsKey='lbStatSel'
+          label='Left bottom:'
           options={cornerOptions}
         />
         <Select
-          settingsKey="rbStatSel"
-          label="Right bottom:"
+          settingsKey='rbStatSel'
+          label='Right bottom:'
           options={cornerOptions}
         />
         <Toggle
-          label="Disable default HR"
-          settingsKey="disableHRToggle"
+          label='Disable default HR'
+          settingsKey='disableHRToggle'
         />
         <Text italic>
             Tap right top statistic to show all stats toast.
@@ -68,14 +68,14 @@ function settingsComponent(props) {
       <Section
         title=
         {
-          <Text bold align="center">
+          <Text bold align='center'>
             Weather
           </Text>
         }
       >
         <Toggle
-          label="Enable weather on clock face"
-          settingsKey="enableWeather"
+          label='Enable weather on clock face'
+          settingsKey='enableWeather'
         />
         {weatherEnabled && <Section>
           <Text italic>
@@ -88,13 +88,13 @@ function settingsComponent(props) {
             Tap displayed weather to show details about weather for 5 days.
           </Text>
           <TextInput
-            label="OpenWeatherMap Key"
-            settingsKey="weatherApiKey"
+            label='OpenWeatherMap Key'
+            settingsKey='weatherApiKey'
             disabled={!weatherEnabled}
           />
           <Select
-            settingsKey="temperatureUnit"
-            label="Temperature unit:"
+            settingsKey='temperatureUnit'
+            label='Temperature unit:'
             options={[
               { name: '°F', value: tempIds.f },
               { name: '°K', value: tempIds.k },
@@ -103,18 +103,18 @@ function settingsComponent(props) {
             disabled={!weatherEnabled}
           />
           <Toggle
-            label="Use GPS"
-            settingsKey="gpsEnabled"
+            label='Use GPS'
+            settingsKey='gpsEnabled'
             disabled={!weatherEnabled}
           />
           <TextInput
-            label="City to fetch (can not specify small town, use GPS)"
-            settingsKey="weatherCity"
+            label='City to fetch (can not specify small town, use GPS)'
+            settingsKey='weatherCity'
             disabled={(!weatherEnabled || gpsEnabled)}
           />
           <Select
-            settingsKey="updateEvery"
-            label="Automatic update weather every:"
+            settingsKey='updateEvery'
+            label='Automatic update weather every:'
             options={[
               { name: '15 min', value: 15 },
               { name: '30 min', value: 30 },

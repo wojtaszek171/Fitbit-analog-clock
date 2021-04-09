@@ -1,5 +1,5 @@
-export const IONIC_MODEL_NUMBER = "27";
-export const VERSA_LITE_MODEL_NUMBER = "38";
+export const IONIC_MODEL_NUMBER = '27';
+export const VERSA_LITE_MODEL_NUMBER = '38';
 
 export const statsIds = {
     steps: 'steps',
@@ -32,4 +32,12 @@ export const companionCommands = {
     weatherConfigured: 'c_weatherConfigured',
     settingsChanged: 'c_settingsChanged',
     disableHRSetting: 'c_disableHRSetting'
+}
+
+export const errorMessages = {
+    fetch: 'Cannot fetch weather. Check your weather API key and Internet connection.',
+    wrongApiKey: 'Invalid weather API key',
+    apiLimit: 'You reached API limit',
+    weatherUnknown: 'Unknown weather server error',
+    gpsFail: 'Failed to use gps'
 }

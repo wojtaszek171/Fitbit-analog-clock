@@ -1,5 +1,5 @@
-import * as fs from "fs";
-import { statsIds } from "../globals";
+import * as fs from 'fs';
+import { statsIds } from '../globals';
 
 const SETTINGS_FILE = 'settings.txt';
 
@@ -15,10 +15,10 @@ export const initializeSettings = () => {
         cornerStats: {
             rtStat: statsIds.steps
         },
-        hrIconEnabled: false
+        hrIconEnabled: true
     };
 
-    fs.writeFileSync(SETTINGS_FILE, settingsKeys, "json");
+    fs.writeFileSync(SETTINGS_FILE, settingsKeys, 'json');
     console.log('created');
 }
 
@@ -26,7 +26,7 @@ const readSettingsFile = () => {
     if (!settingsExist()) {
         return {};
     }
-    const settings_object  = fs.readFileSync(SETTINGS_FILE, "json");
+    const settings_object = fs.readFileSync(SETTINGS_FILE, 'json');
     return settings_object;
 }
 
@@ -36,7 +36,7 @@ export const updateSettingsFile = (body) => {
         ...currentSettings,
         ...body
     };
-    fs.writeFileSync(SETTINGS_FILE, newSettings, "json");
+    fs.writeFileSync(SETTINGS_FILE, newSettings, 'json');
 }
 
 export const getSettingFromFile = (key) => {
