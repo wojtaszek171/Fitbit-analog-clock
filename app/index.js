@@ -129,14 +129,16 @@ const sendMessage = (message) => {
 }
 
 const fetchTodayWeather = () => {
-  weatherButtonIcon.style.display = 'inline';
-  weatherButtonIcon.animate('enable');
-  cityname.text = '';
-  weatherIcon.href = '';
-  degrees.text = '';
-  sendMessage({
-    command: appCommands.todayWeather
-  });
+  if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+    weatherButtonIcon.style.display = 'inline';
+    weatherButtonIcon.animate('enable');
+    cityname.text = '';
+    weatherIcon.href = '';
+    degrees.text = '';
+    sendMessage({
+      command: appCommands.todayWeather
+    });
+  }
 }
 
 const fetchStatsSettings = () => {
@@ -231,7 +233,7 @@ const setSettingsListener = () => {
         updateSettingsFile({ weatherConfigured: displayWeather });
         enableWeatherSection(displayWeather);
         if (displayWeather) {
-          const updateMinutes = updateEveryMinutes || 30;  
+          const updateMinutes = updateEveryMinutes || 30;
           if (temperature) {
             const el = weatherElement;
             cityname.text = cityName;
