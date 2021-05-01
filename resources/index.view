@@ -1,10 +1,5 @@
 <svg>
   <defs>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="import" href="/mnt/sysassets/widgets_common.gui" />
-    <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui" />
-    <link rel="import" href="/mnt/sysassets/widgets/panoramaview_widget.gui" />
-    <link rel="import" href="/mnt/sysassets/widgets/scrollview_widget.gui" />
     <symbol id="toast">
       <g>
         <section x="0" y="100%">
@@ -85,9 +80,9 @@
       </section>
     </symbol>
   </defs>
-  <use id="container" href="#panoramaview">
-    <use id="clockView" href="#panoramaview-item">
-      <svg viewport-fill="#111111">
+  <svg>
+    <use id="container" href="#cycleview">
+      <use id="clockView" href="#cycleview-item" class="cycle-item">
         <section x="20" y="20">
           <image id="notConnectedIcon" fill="#ffffff" y="$" width="36" height="36" href="no_bt.png" />
         </section>
@@ -150,53 +145,51 @@
         </g>
         <circle cx="50%" cy="50%" r="8" fill="#ff0000" />
         <circle cx="50%" cy="50%" r="6" fill="#000000" />
-      </svg>
-      <section x="0" y="0">
-        <rect id="weatherRefreshButton" height="100%" width="100%" pointer-events="visible" opacity="0" fill="red"/>
-        <svg x="25" y="25" height="30" width="30">
-          <g id="weatherButtonIcon" transform="rotate(180)" transform="translate(50%,50%)">
-            <image id="weatherButtonIcon" x="$-15" y="$-15" href="refresh.png" height="30" width="30" pointer-events="visible" fill="#ffffff"/>
-            <animateTransform attributeType="rotate" from="0" to="1080" begin="enable" dur="4" />
-          </g>
-        </svg>
-        <rect id="weatherButton" height="80" width="120" pointer-events="visible" opacity="0" fill="#ffffff"/>
-        <rect y="$-80" x="100%-120" id="showStatsButton" height="80" width="120" pointer-events="visible" opacity="0" fill="red"/>
-      </section>
+        <section x="0" y="0">
+          <rect id="weatherRefreshButton" height="100%" width="100%" pointer-events="visible" opacity="0" fill="red"/>
+          <svg x="25" y="25" height="30" width="30">
+            <g id="weatherButtonIcon" transform="rotate(180)" transform="translate(50%,50%)">
+              <image id="weatherButtonIcon" x="$-15" y="$-15" href="refresh.png" height="30" width="30" pointer-events="visible" fill="#ffffff"/>
+              <animateTransform attributeType="rotate" from="0" to="1080" begin="enable" dur="4" />
+            </g>
+          </svg>
+          <rect id="weatherButton" height="80" width="120" pointer-events="visible" opacity="0" fill="#ffffff"/>
+          <rect y="$-80" x="100%-120" id="showStatsButton" height="80" width="120" pointer-events="visible" opacity="0" fill="red"/>
+        </section>
+      </use>
+      <use id="weatherView" href="#cycleview-item" class="cycle-item">
+          <!-- <rect y="0" x="0" width="100%" height="100%" fill="grey"/> -->
+          <use href="#scrollview">
+            <use href="#view-header" height="60" width="100%">
+              <rect id="goToClockButton" height="100%" width="100%" pointer-events="visible" opacity="0" fill="#ffffff">
+                <image x="10" y="10" width="40" height="40" href="goback.png"/>
+                <use x="50%-90" y="10" id="detailsCityName" href="#custom-textarea-middle" width="100% - 60" height="60" />
+              </rect>
+            </use>
+            <use href="#scrollview-item" height="110">
+              <use id="day1" href="#day-weather-row"/>
+              <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
+            </use>
+            <use href="#scrollview-item" height="110">
+              <use id="day2" href="#day-weather-row"/>
+              <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
+            </use>
+            <use href="#scrollview-item" height="110">
+              <use id="day3" href="#day-weather-row"/>
+              <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
+            </use>
+            <use href="#scrollview-item" height="110">
+              <use id="day4" href="#day-weather-row"/>
+              <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
+            </use>
+            <use href="#scrollview-item" height="110">
+              <use id="day5" href="#day-weather-row"/>
+              <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
+            </use>
+          </use>
+      </use>
     </use>
-    <use id="weatherView" href="#panoramaview-item">
-      <svg viewport-fill="#111111">
-        <!-- <rect y="0" x="0" width="100%" height="100%" fill="grey"/> -->
-        <use href="#scrollview">
-          <use href="#view-header" height="60" width="100%">
-            <rect id="goToClockButton" height="100%" width="100%" pointer-events="visible" opacity="0" fill="#ffffff">
-              <image x="10" y="10" width="40" height="40" href="goback.png"/>
-              <use x="50%-90" y="10" id="detailsCityName" href="#custom-textarea-middle" width="100% - 60" height="60" />
-            </rect>
-          </use>
-          <use href="#scrollview-item" height="110">
-            <use id="day1" href="#day-weather-row"/>
-            <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
-          </use>
-          <use href="#scrollview-item" height="110">
-            <use id="day2" href="#day-weather-row"/>
-            <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
-          </use>
-          <use href="#scrollview-item" height="110">
-            <use id="day3" href="#day-weather-row"/>
-            <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
-          </use>
-          <use href="#scrollview-item" height="110">
-            <use id="day4" href="#day-weather-row"/>
-            <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
-          </use>
-          <use href="#scrollview-item" height="110">
-            <use id="day5" href="#day-weather-row"/>
-            <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
-          </use>
-        </use>
-      </svg>
-    </use>
-  </use>
+  </svg>
   <use id="toastUse" href="#toast"/>
   <use id="statsDetailsUse" href="#statsDetails"/>
 </svg>

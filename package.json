@@ -4,7 +4,7 @@
   "private": true,
   "license": "UNLICENSED",
   "devDependencies": {
-    "@fitbit/sdk": "^4.2.1",
+    "@fitbit/sdk": "^5.0.2",
     "@fitbit/sdk-cli": "^1.7.3"
   },
   "fitbit": {
@@ -21,10 +21,8 @@
       "run_background"
     ],
     "buildTargets": [
-      "mira",
-      "higgs",
-      "meson",
-      "gemini"
+      "atlas",
+      "vulcan"
     ],
     "i18n": {},
     "defaultLanguage": "en-US"
