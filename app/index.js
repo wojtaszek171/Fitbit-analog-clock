@@ -57,15 +57,15 @@ const hoursToAngle = (hours, minutes) => {
   let hourAngle = (360 / 12) * hours;
   let minAngle = (360 / 12 / 60) * minutes;
   return hourAngle + minAngle;
-}
+};
 
 const minutesToAngle = (minutes) => {
   return (360 / 60) * minutes;
-}
+};
 
 const secondsToAngle = (seconds) => {
   return (360 / 60) * seconds;
-}
+};
 
 const setDisplayListener = () => {
   display.addEventListener('change', () => {
@@ -78,9 +78,9 @@ const setDisplayListener = () => {
       clock.granularity = 'minutes';
       hrm.stop();
       bodyPresence.stop();
-    }
+    };
   });
-}
+};
 
 const handleClockTick = () => {
   let todayDate = new Date();
@@ -95,7 +95,7 @@ const handleClockTick = () => {
   updateCornerStats();
 
   dateText.text = todayDate.getDate() + ' ' + monthNames[todayDate.getMonth()];
-}
+};
 
 const updateCornerStats = () => {
   statsArr.forEach((stat) => {
@@ -116,7 +116,7 @@ const updateCornerStats = () => {
         break;
     }
   });
-}
+};
 
 const isSocketOpen = () => messaging.peerSocket.readyState === messaging.peerSocket.OPEN;
 
@@ -125,8 +125,8 @@ const sendMessage = (message) => {
     messaging.peerSocket.send(message);
   } else {
     displayToast(errorMessages.closedSocket);
-  }
-}
+  };
+};
 
 const fetchTodayWeather = () => {
   if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
@@ -138,32 +138,32 @@ const fetchTodayWeather = () => {
     sendMessage({
       command: appCommands.todayWeather
     });
-  }
-}
+  };
+};
 
 const fetchStatsSettings = () => {
   sendMessage({
     command: appCommands.statsSettings
   });
-}
+};
 
 const fetchHRToggleSetting = () => {
   sendMessage({
     command: appCommands.disableHRSetting
   });
-}
+};
 
 const fetchWeatherConfiguredSetting = () => {
   sendMessage({
     command: appCommands.weatherConfigured
   });
-}
+};
 
 const fetch5daysWeather = () => {
   sendMessage({
     command: appCommands.forecastWeather
   });
-}
+};
 
 const displayToast = (message) => {
   const toastText =   document.getElementById('toastText');
@@ -177,7 +177,7 @@ const displayToast = (message) => {
   toastTimeout = setTimeout(() => { //wait a second showing message
     toastElement.animate('disable'); //hide toast
   }, 3000);
-}
+};
 
 const displayStatsDetails = () => {
   statSteps.text = today.adjusted.steps || 0;
@@ -198,7 +198,7 @@ const displayStatsDetails = () => {
       statsDetailsElement.style.display = 'none';
     }, 1000);
   }, 3000);
-}
+};
 
 const setSettingsListener = () => {
   if (getSettingFromFile('weatherConfigured') && messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
@@ -210,14 +210,14 @@ const setSettingsListener = () => {
     fetchStatsSettings();
     fetchHRToggleSetting();
     fetchWeatherConfiguredSetting();
-  }
+  };
 
   messaging.peerSocket.onclose = () => {
     if (ltStat.style.display === 'none' && getSettingFromFile('weatherConfigured')) {
       notConnectedIcon.style.display = 'inline';
       enableWeatherSection(false);
     }
-  }
+  };
 
   const weatherInterval = null;
   messaging.peerSocket.onmessage = (evt) => {
@@ -251,7 +251,7 @@ const setSettingsListener = () => {
       case companionCommands.forecastWeather:
         const { displayWeather, cityName, temperature, svgElement: svgKey, weatherDayMessage, temperatureUnit } = data;
         updateSettingsFile({ weatherConfigured: displayWeather });
-        if (displayWeather)  {
+        if (displayWeather) {
           detailsCityName.text = cityName;
         }
         if (svgKey) {
@@ -319,7 +319,7 @@ const setSettingsListener = () => {
         break;
     }
   }
-}
+};
 
 const showHRIcon = (hrIconEnabled) => {
   if (hrIconEnabled) {
@@ -327,7 +327,7 @@ const showHRIcon = (hrIconEnabled) => {
   } else {
     heartRateSection.style.display = 'none';
   }
-}
+};
 
 const initializeCornerSettings = (payload) => {
   ltStat.style.display = 'none';
@@ -368,7 +368,7 @@ const initializeCornerSettings = (payload) => {
   });
 
   updateCornerStats();
-}
+};
 
 const getStatFunction = (stat) => {
   switch (stat) {
@@ -387,7 +387,7 @@ const getStatFunction = (stat) => {
     default:
       return;
   }
-}
+};
 
 const setHeartListener = () => {
   const heartRateText = document.getElementById('heartratetext');
@@ -411,12 +411,12 @@ const setHeartListener = () => {
     });
     bodyPresence.start();
   }
-}
+};
 
 const setButtonsListeners = () => {
   reloadWeatherButton.onclick = () => {
     fetchTodayWeather();
-  }
+  };
   
   weatherButton.onclick = () => {
     if (weatherButtonIcon.style.display === 'inline'){
@@ -425,16 +425,16 @@ const setButtonsListeners = () => {
       fetch5daysWeather();
       container.value = 1;
     }
-  }
+  };
 
   statsButton.onclick = () => {
     displayStatsDetails();
-  }
+  };
   
   goToClockButton.onclick = () => {
     container.value = 0;
-  }
-}
+  };
+};
 
 const enableWeatherSection = (enable) => {
   if (enable) {
@@ -452,7 +452,7 @@ const enableWeatherSection = (enable) => {
     cityname.text = '';
     degrees.text = '';
   }
-}
+};
 
 const recoverLastSettings = () => {
   const cornerStats = getSettingFromFile('cornerStats');
@@ -460,7 +460,7 @@ const recoverLastSettings = () => {
   showHRIcon(!!getSettingFromFile('hrIconEnabled'));
 
   enableWeatherSection(getSettingFromFile(false)); //disable weather at start
-}
+};
 
 const setAllListeners = () => {
   ltStat.style.display = 'none';
@@ -486,6 +486,6 @@ const setAllListeners = () => {
   setButtonsListeners();
 
   clock.ontick = () => handleClockTick();
-}
+};
 
 setAllListeners();

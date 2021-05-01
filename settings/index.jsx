@@ -29,8 +29,7 @@ function settingsComponent(props) {
   return (
     <Page>
       <Section
-        title=
-        {
+        title={
           <Text bold align='center'>
             Display statistic
           </Text>
@@ -66,8 +65,7 @@ function settingsComponent(props) {
         </Text>
       </Section>
       <Section
-        title=
-        {
+        title={
           <Text bold align='center'>
             Weather
           </Text>
@@ -77,55 +75,57 @@ function settingsComponent(props) {
           label='Enable weather on clock face'
           settingsKey='enableWeather'
         />
-        {weatherEnabled && <Section>
-          <Text italic>
-            To make weather working properly allow Fitbit app on your phone to work in background and disable all battery optimisations for it.
-          </Text>
-          <Text italic>
-            Tap screen to refresh weather.
-          </Text>
-          <Text italic>
-            Tap displayed weather to show details about weather for 5 days.
-          </Text>
-          <TextInput
-            label='OpenWeatherMap Key'
-            settingsKey='weatherApiKey'
-            disabled={!weatherEnabled}
-          />
-          <Select
-            settingsKey='temperatureUnit'
-            label='Temperature unit:'
-            options={[
-              { name: '°F', value: tempIds.f },
-              { name: '°K', value: tempIds.k },
-              { name: '°C', value: tempIds.c }
-            ]}
-            disabled={!weatherEnabled}
-          />
-          <Toggle
-            label='Use GPS'
-            settingsKey='gpsEnabled'
-            disabled={!weatherEnabled}
-          />
-          <TextInput
-            label='City to fetch (can not specify small town, use GPS)'
-            settingsKey='weatherCity'
-            disabled={(!weatherEnabled || gpsEnabled)}
-          />
-          <Select
-            settingsKey='updateEvery'
-            label='Automatic update weather every:'
-            options={[
-              { name: '15 min', value: 15 },
-              { name: '30 min', value: 30 },
-              { name: '60 min', value: 60 }
-            ]}
-            disabled={!weatherEnabled}
-          />
-        </Section>}
+        {weatherEnabled &&
+          <Section>
+            <Text italic>
+              To make weather working properly allow Fitbit app on your phone to work in background and disable all battery optimisations for it.
+            </Text>
+            <Text italic>
+              Tap screen to refresh weather.
+            </Text>
+            <Text italic>
+              Tap displayed weather to show details about weather for 5 days.
+            </Text>
+            <TextInput
+              label='OpenWeatherMap Key'
+              settingsKey='weatherApiKey'
+              disabled={!weatherEnabled}
+            />
+            <Select
+              settingsKey='temperatureUnit'
+              label='Temperature unit:'
+              options={[
+                { name: '°F', value: tempIds.f },
+                { name: '°K', value: tempIds.k },
+                { name: '°C', value: tempIds.c }
+              ]}
+              disabled={!weatherEnabled}
+            />
+            <Toggle
+              label='Use GPS'
+              settingsKey='gpsEnabled'
+              disabled={!weatherEnabled}
+            />
+            <TextInput
+              label='City to fetch (can not specify small town, use GPS)'
+              settingsKey='weatherCity'
+              disabled={(!weatherEnabled || gpsEnabled)}
+            />
+            <Select
+              settingsKey='updateEvery'
+              label='Automatic update weather every:'
+              options={[
+                { name: '15 min', value: 15 },
+                { name: '30 min', value: 30 },
+                { name: '60 min', value: 60 }
+              ]}
+              disabled={!weatherEnabled}
+            />
+          </Section>
+        }
       </Section>
     </Page>
   );
-}
+};
 
 registerSettingsPage(settingsComponent);
