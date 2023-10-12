@@ -14,31 +14,31 @@
       <g>
         <section x="100%" y="0">
           <rect width="130" height="100%" fill='#000000' opacity="0.8" pointer-events="visible"/>
-          <section height="100%" width="110" x="10" y="10">
+          <section height="100%" width="110" x="10" y="30">
             <section class="statsRow" x="0%" y="$">
               <image class="whiteImage" height="30" width="30" href="statsimages/steps.png" />
-              <text x="50%+15" y="22" class="statsText" id="statsSteps">-</text>
+              <text x="50%+10" y="22" class="statsText" id="statsSteps">-</text>
             </section>
             <section class="statsRow" x="0%" y="$">
               <image class="whiteImage" height="30" width="30" href="statsimages/cals.png" />
-              <text x="50%+15" y="22" class="statsText" id="statsCals">-</text>
+              <text x="50%+10" y="22" class="statsText" id="statsCals">-</text>
             </section>
             <section class="statsRow" x="0%" y="$">
               <image class="whiteImage" height="30" width="30" href="statsimages/dist.png" />
-              <text x="50%+15" y="22" class="statsText" id="statsDist">-</text>
+              <text x="50%+10" y="22" class="statsText" id="statsDist">-</text>
             </section>
             <section class="statsRow" x="0%" y="$">
               <image class="whiteImage" height="30" width="30" href="statsimages/hr.png" />
-              <text x="50%+15" y="22" class="statsText" id="statsHr">-</text>
+              <text x="50%+10" y="22" class="statsText" id="statsHr">-</text>
             </section>
             <section class="statsRow" x="0%" y="$">
               <image class="whiteImage" height="30" width="30" href="statsimages/azm.png" />
-              <text x="50%+15" y="22" class="statsText" id="statsAzm">-</text>
+              <text x="50%+10" y="22" class="statsText" id="statsAzm">-</text>
             </section>
             <section class="statsRow" x="0%" y="$">
               <g id="statsRowFloors">
                 <image class="whiteImage" height="30" width="30" href="statsimages/floors.png" />
-                <text x="50%+15" y="22" class="statsText" id="statsFloors">-</text>
+                <text x="50%+10" y="22" class="statsText" id="statsFloors">-</text>
               </g>
             </section>
           </section>
@@ -81,8 +81,11 @@
     </symbol>
   </defs>
   <svg>
-    <use id="container" href="#cycleview">
-      <use id="clockView" href="#cycleview-item" class="cycle-item">
+    <use id="container" href="#tile-list">
+      <var id="align-mode" value="1" />
+      <var id="peek-enabled" value="0" />
+      <use id="clockView" href="#tile-list-item" class="cycle-item">
+        <rect y="0" x="0" width="100%" height="100%" fill="#000000" />
         <section x="20" y="20">
           <image id="notConnectedIcon" fill="#ffffff" y="$" width="36" height="36" href="no_bt.png" />
         </section>
@@ -157,12 +160,11 @@
           <rect y="$-80" x="100%-120" id="showStatsButton" height="80" width="120" pointer-events="visible" opacity="0" fill="red"/>
         </section>
       </use>
-      <use id="weatherView" href="#cycleview-item" class="cycle-item">
-          <!-- <rect y="0" x="0" width="100%" height="100%" fill="grey"/> -->
-          <use href="#scrollview">
+      <use id="weatherView" href="#tile-list-item" class="horizontal-pad">
+          <use id="weatherScroll" href="#scrollview">
             <use href="#view-header" height="60" width="100%">
               <rect id="goToClockButton" height="100%" width="100%" pointer-events="visible" opacity="0" fill="#ffffff">
-                <image x="10" y="10" width="40" height="40" href="goback.png"/>
+                <image x="20" y="10" width="40" height="40" href="goback.png"/>
                 <use x="50%-90" y="10" id="detailsCityName" href="#custom-textarea-middle" width="100% - 60" height="60" />
               </rect>
             </use>
@@ -182,11 +184,14 @@
               <use id="day4" href="#day-weather-row"/>
               <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
             </use>
-            <use href="#scrollview-item" height="110">
+            <use href="#scrollview-item" height="120">
               <use id="day5" href="#day-weather-row"/>
               <line x1="0" x2="100%" y1="100%" y2="100%" fill="#ffffff"/>
             </use>
+            <use href="#scrollview-item" height="30">
+            </use>
           </use>
+          <rect id="forecastArea" y="0" x="0" width="100%" height="100%" pointer-events="visible" opacity="0" />
       </use>
     </use>
   </svg>

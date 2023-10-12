@@ -43,7 +43,8 @@ const ltStat = document.getElementById('ltStat');
 const lbStat = document.getElementById('lbStat');
 const rbStat = document.getElementById('rbStat');
 const heartRateSection = document.getElementById('heartRate');
-const minutesLayer = document.getElementById('minutesLayer');
+const weatherScroll = document.getElementById('weatherScroll');
+const forecastArea = document.getElementById('forecastArea');
 
 let hrm = null; // heart rate sensor data
 let bodyPresence = null; // body presence sensor data
@@ -434,6 +435,18 @@ const setButtonsListeners = () => {
   goToClockButton.onclick = () => {
     container.value = 0;
   };
+
+  forecastArea.onclick = () => {
+    const currentVal = weatherScroll.value;
+    if (currentVal === 0) {
+      weatherScroll.value = 2;
+    } else
+    if (currentVal === 2) {
+      weatherScroll.value = 4;
+    } else {
+      weatherScroll.value = 0;
+    }
+  }
 };
 
 const enableWeatherSection = (enable) => {
@@ -487,5 +500,9 @@ const setAllListeners = () => {
 
   clock.ontick = () => handleClockTick();
 };
+
+document.getElementById('clockView').layer = 2;
+document.getElementById('toastUse').layer = 3;
+document.getElementById('statsDetailsUse').layer = 3;
 
 setAllListeners();
