@@ -91,8 +91,8 @@
         </section>
         <section x="20" y="20" height="36" width="100%">
           <g id='weather'>
-            <text id="cityname" class="left18pxbold" x="8" y="20" width="100% - 150" />
-            <image id="weatherIcon" y="$-20" width="40" height="40"/>
+            <text id="cityname" class="left18pxbold" x="42" y="27" width="100% - 150" />
+            <image id="weatherIcon" x="10" y="$-20" width="40" height="40"/>
             <text id="degrees" y="$-14" x="$"></text>
           </g>
         </section>
@@ -104,26 +104,26 @@
         </section>
         <section x="8%" y="30">
           <g id="ltStat">
-            <image x="$" y="$-4" width="20" id="ltStatImage" fill="#ffffff" height="20" href="statsimages/steps.png" />
-            <text x="$+2" y="$-4" id="ltStatText">---</text>
+            <image x="$+15" y="$+15" width="20" id="ltStatImage" fill="#ffffff" height="20" href="statsimages/steps.png" />
+            <text x="$+2" y="$-18" id="ltStatText">---</text>
           </g>
         </section>
         <section x="85%" y="30">
           <g id="rtStat">
-            <image x="$" y="$-4" width="20" id="rtStatImage" fill="#ffffff" height="20" href="statsimages/steps.png" />
-            <text x="$-22" y="$-4" id="rtStatText">---</text>
+            <image x="$-10" y="$+15" width="20" id="rtStatImage" fill="#ffffff" height="20" href="statsimages/steps.png" />
+            <text x="$-22" y="$-18" id="rtStatText">---</text>
           </g>
         </section>
         <section x="8%" y="85%">
           <g id="lbStat">
-            <image x="$" y="$-4" width="20" id="lbStatImage" fill="#ffffff" height="20" href="statsimages/steps.png" />
-            <text x="$+2" y="$-4" id="lbStatText">---</text>
+            <image x="$+15" y="$-18" width="20" id="lbStatImage" fill="#ffffff" height="20" href="statsimages/steps.png" />
+            <text x="$+2" y="$+16" id="lbStatText">---</text>
           </g>
         </section>
         <section x="85%" y="85%">
           <g id="rbStat">
-            <image x="$" y="$-4" width="20" id="rbStatImage" fill="#ffffff" height="20" href="statsimages/steps.png" />
-            <text x="$-22" y="$-4" id="rbStatText">---</text>
+            <image x="$-10" y="$-18" width="20" id="rbStatImage" fill="#ffffff" height="20" href="statsimages/steps.png" />
+            <text x="$-24" y="$+16" id="rbStatText">---</text>
           </g>
         </section>
         <section x="92%" y="50%">
@@ -150,7 +150,7 @@
         <circle cx="50%" cy="50%" r="6" fill="#000000" />
         <section x="0" y="0">
           <rect id="weatherRefreshButton" height="100%" width="100%" pointer-events="visible" opacity="0" fill="red"/>
-          <svg x="25" y="25" height="30" width="30">
+          <svg x="50" y="40" height="30" width="30">
             <g id="weatherButtonIcon" transform="rotate(180)" transform="translate(50%,50%)">
               <image id="weatherButtonIcon" x="$-15" y="$-15" href="refresh.png" height="30" width="30" pointer-events="visible" fill="#ffffff"/>
               <animateTransform attributeType="rotate" from="0" to="1080" begin="enable" dur="4" />
