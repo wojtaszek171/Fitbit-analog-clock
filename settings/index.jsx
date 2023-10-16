@@ -86,6 +86,9 @@ function settingsComponent(props) {
             <Text italic>
               Tap displayed weather to show details about weather for 5 days.
             </Text>
+            <Text italic>
+            Tap screen to scroll weather forecast. Scroll in clockfaces doesn't work on new Fitbit devices.
+            </Text>
             <TextInput
               label='OpenWeatherMap Key'
               settingsKey='weatherApiKey'

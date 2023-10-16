@@ -8,7 +8,7 @@
     "@fitbit/sdk-cli": "^1.7.3"
   },
   "fitbit": {
-    "appUUID": "0b0822d1-5878-47a1-8440-1cfe25107ef2",
+    "appUUID": "b303db35-1871-44dc-b0b2-0f50ddc1e1a6",
     "appType": "clockface",
     "appDisplayName": "Analog with weather",
     "iconFile": "resources/icon.png",
