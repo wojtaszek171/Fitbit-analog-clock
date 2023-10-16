@@ -227,10 +227,10 @@ const setSettingsListener = () => {
     if (data.error) {
       return displayToast(data.error);
     }
+    const { displayWeather, updateEveryMinutes, weatherElement, cityName, temperature, svgElement: svgKey, weatherDayMessage, temperatureUnit } = data;
 
     switch (data.command) {
       case companionCommands.todayWeather:
-        const { displayWeather, updateEveryMinutes, weatherElement, cityName, temperature } = data;
         updateSettingsFile({ weatherConfigured: displayWeather });
         enableWeatherSection(displayWeather);
         if (displayWeather) {
@@ -250,7 +250,6 @@ const setSettingsListener = () => {
         }
         break;
       case companionCommands.forecastWeather:
-        const { displayWeather, cityName, temperature, svgElement: svgKey, weatherDayMessage, temperatureUnit } = data;
         updateSettingsFile({ weatherConfigured: displayWeather });
         if (displayWeather) {
           detailsCityName.text = cityName;
