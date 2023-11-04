@@ -4,8 +4,8 @@
   "private": true,
   "license": "UNLICENSED",
   "devDependencies": {
-    "@fitbit/sdk": "^6.1.0",
-    "@fitbit/sdk-cli": "^1.7.3"
+    "@fitbit/sdk": "~6.2.0-pre.1",
+    "@fitbit/sdk-cli": "~1.8.0-pre.10"
   },
   "fitbit": {
     "appUUID": "b303db35-1871-44dc-b0b2-0f50ddc1e1a6",
@@ -22,7 +22,8 @@
     ],
     "buildTargets": [
       "atlas",
-      "vulcan"
+      "vulcan",
+      "hera"
     ],
     "i18n": {},
     "defaultLanguage": "en-US"
