@@ -71,11 +71,12 @@ const secondsToAngle = (seconds) => {
 const setDisplayListener = () => {
   display.addEventListener('change', () => {
     if (display.on) {
+      container.value = 0;
+      weatherScroll.value = 0;
       clock.granularity = 'seconds';
       hrm.start();
       bodyPresence.start();
     } else {
-      container.value = 0;
       clock.granularity = 'minutes';
       hrm.stop();
       bodyPresence.stop();
