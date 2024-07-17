@@ -7,6 +7,7 @@ import { display } from "display";
 import { today } from "user-activity";
 import { preferences } from "user-settings";
 import { me as device } from "device";
+import { battery } from "power";
 import {
   monthNames,
   daysNames,
@@ -60,6 +61,8 @@ const rbStat = document.getElementById("rbStat");
 const heartRateSection = document.getElementById("heartRate");
 const weatherScroll = document.getElementById("weatherScroll");
 const forecastArea = document.getElementById("forecastArea");
+const batteryRect = document.getElementById("batIndicator");
+const batteryPercent = document.getElementById("batPercent");
 
 let hrm = null; // heart rate sensor data
 let bodyPresence = null; // body presence sensor data
@@ -110,6 +113,17 @@ const handleClockTick = () => {
   secHand.groupTransform.rotate.angle = secondsToAngle(secs);
 
   updateCornerStats();
+
+  const batLevel = battery.chargeLevel;
+  batteryRect.width = Math.floor(((40 - 2) / 100) * batLevel);
+  if (batLevel > 40) {
+    batteryRect.style.fill = "#30c020";
+  } else if (batLevel < 20) {
+    batteryRect.style.fill = "red";
+  } else if (batLevel < 50) {
+    batteryRect.style.fill = "orange";
+  }
+  batteryPercent.text = batLevel;
 
   dateText.text = todayDate.getDate() + " " + monthNames[todayDate.getMonth()];
 };
