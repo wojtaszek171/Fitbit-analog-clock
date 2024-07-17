@@ -257,15 +257,19 @@ const setSettingsListener = () => {
       return displayToast(data.error);
     }
 
+    const {
+      displayWeather,
+      updateEveryMinutes,
+      weatherElement,
+      cityName,
+      temperature,
+      svgElement: svgKey,
+      weatherDayMessage,
+      temperatureUnit,
+    } = data;
+
     switch (data.command) {
-      case companionCommands.todayWeather: {
-        const {
-          displayWeather,
-          updateEveryMinutes,
-          weatherElement,
-          cityName,
-          temperature,
-        } = data;
+      case companionCommands.todayWeather:
         updateSettingsFile({ weatherConfigured: displayWeather });
         enableWeatherSection(displayWeather);
         if (displayWeather) {
@@ -287,16 +291,7 @@ const setSettingsListener = () => {
           }
         }
         break;
-      }
-      case companionCommands.forecastWeather: {
-        const {
-          displayWeather,
-          cityName,
-          temperature,
-          svgElement: svgKey,
-          weatherDayMessage,
-          temperatureUnit,
-        } = data;
+      case companionCommands.forecastWeather:
         updateSettingsFile({ weatherConfigured: displayWeather });
         if (displayWeather) {
           detailsCityName.text = cityName;
@@ -314,9 +309,8 @@ const setSettingsListener = () => {
               const hourElement = svgElement.getElementById("hour" + i);
               const temperatureElement =
                 hourElement.getElementById("rowWeatherDegrees");
-              const unit = temperatureUnit;
 
-              switch (unit) {
+              switch (temperatureUnit) {
                 case tempIds.f:
                   temperatureElement.style.fontSize = 16;
                   break;
@@ -347,7 +341,6 @@ const setSettingsListener = () => {
             });
         }
         break;
-      }
       case companionCommands.statsSettings:
         const { payload } = data;
 
@@ -466,10 +459,7 @@ const getStatFunction = (stat) => {
     case statsIds.hr:
       return () => (hrm && bodyPresence.present ? hrm.heartRate : "--");
     case statsIds.azm:
-      return () =>
-        (today.adjusted.activeZoneMinutes &&
-          today.adjusted.activeZoneMinutes.total) ||
-        0;
+      return () => today.adjusted.activeZoneMinutes?.total || 0;
     case statsIds.floors:
       return () => today.adjusted.elevationGain || 0;
     default:
@@ -544,7 +534,7 @@ const enableWeatherSection = (enable) => {
 
 const recoverLastSettings = () => {
   const cornerStats = getSettingFromFile("cornerStats");
-  initializeCornerSettings(cornerStats ? cornerStats : {});
+  initializeCornerSettings(cornerStats || {});
   showHRIcon(!!getSettingFromFile("hrIconEnabled"));
 
   enableWeatherSection(getSettingFromFile(false)); //disable weather at start
