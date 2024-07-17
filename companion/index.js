@@ -17,6 +17,7 @@ import {
   getIsHRIconDisabled,
   getIsWeatherConfigured,
   isGPSEnabled,
+  getDistanceUnit,
 } from "./settingsSelector";
 
 const getWeatherUrlUnit = (unit) => {
@@ -244,6 +245,13 @@ const returnWeatherConfiguredValue = () => {
   });
 };
 
+const returnDistanceUnit = () => {
+  messaging.peerSocket.send({
+    command: companionCommands.updateDistanceUnit,
+    distanceUnit: getDistanceUnit(),
+  });
+};
+
 settingsStorage.setItem("modelId", device.modelId);
 
 messaging.peerSocket.onmessage = (evt) => {
@@ -266,6 +274,9 @@ messaging.peerSocket.onmessage = (evt) => {
       break;
     case appCommands.weatherConfigured:
       returnWeatherConfiguredValue();
+      break;
+    case appCommands.updateDistanceUnit:
+      returnDistanceUnit();
       break;
     default:
       break;
@@ -293,6 +304,13 @@ settingsStorage.onchange = (evt) => {
         command: companionCommands.disableHRSetting,
         disabled: getIsHRIconDisabled(),
       });
+      break;
+    case "distanceUnit":
+      messaging.peerSocket.send({
+        command: companionCommands.updateDistanceUnit,
+        distanceUnit: getDistanceUnit(),
+      });
+      break;
     default:
       queryTodayOpenWeather();
       break;

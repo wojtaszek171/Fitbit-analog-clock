@@ -41,6 +41,13 @@ export const tempIds = {
   c: "c",
 };
 
+export const distanceIds = {
+  m: "m",
+  km: "km",
+  yards: "yards",
+  miles: "miles",
+};
+
 export const appCommands = {
   todayWeather: "a_todayWeather",
   forecastWeather: "a_forecastWeather",
@@ -48,6 +55,7 @@ export const appCommands = {
   weatherConfigured: "a_weatherConfigured",
   settingsChanged: "a_settingsChanged",
   disableHRSetting: "a_disableHRSetting",
+  updateDistanceUnit: "a_updateDistanceUnit",
 };
 
 export const companionCommands = {
@@ -57,6 +65,7 @@ export const companionCommands = {
   weatherConfigured: "c_weatherConfigured",
   settingsChanged: "c_settingsChanged",
   disableHRSetting: "c_disableHRSetting",
+  updateDistanceUnit: "c_updateDistanceUnit",
 };
 
 export const errorMessages = {

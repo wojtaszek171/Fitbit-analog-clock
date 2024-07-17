@@ -1,4 +1,9 @@
-import { statsIds, tempIds, VERSA_LITE_MODEL_NUMBER } from "../globals";
+import {
+  distanceIds,
+  statsIds,
+  tempIds,
+  VERSA_LITE_MODEL_NUMBER,
+} from "../globals";
 
 function settingsComponent(props) {
   const weatherEnabled = props.settings.enableWeather === "true";
@@ -57,6 +62,16 @@ function settingsComponent(props) {
           options={cornerOptions}
         />
         <Toggle label="Disable default HR" settingsKey="disableHRToggle" />
+        <Select
+          settingsKey="distanceUnit"
+          label="Distance unit:"
+          options={[
+            { name: "Metric (meters)", value: distanceIds.m },
+            { name: "Metric (kilometers)", value: distanceIds.km },
+            { name: "Imperial (yards)", value: distanceIds.yards },
+            { name: "Imperial (miles)", value: distanceIds.miles },
+          ]}
+        />
         <Text italic>Tap right top statistic to show all stats toast.</Text>
       </Section>
       <Section

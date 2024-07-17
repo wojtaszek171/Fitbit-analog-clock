@@ -35,6 +35,11 @@ export const getTemperatureUnit = () => {
   return temperatureUnit ? temperatureUnit.values[0].value : tempIds.c;
 };
 
+export const getDistanceUnit = () => {
+  const distanceUnit = JSON.parse(settingsStorage.getItem("distanceUnit"));
+  return distanceUnit ? distanceUnit.values[0].value : "meters";
+};
+
 export const getAPIKey = () => {
   const weatherApiSetting = JSON.parse(
     settingsStorage.getItem("weatherApiKey")

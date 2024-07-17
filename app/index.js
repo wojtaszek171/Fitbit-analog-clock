@@ -17,6 +17,7 @@ import {
   tempIds,
   VERSA_LITE_MODEL_NUMBER,
   errorMessages,
+  distanceIds,
 } from "../globals";
 import {
   getSettingFromFile,
@@ -167,6 +168,12 @@ const fetchHRToggleSetting = () => {
   });
 };
 
+const fetchDistanceUnit = () => {
+  sendMessage({
+    command: appCommands.updateDistanceUnit,
+  });
+};
+
 const fetchWeatherConfiguredSetting = () => {
   sendMessage({
     command: appCommands.weatherConfigured,
@@ -195,15 +202,12 @@ const displayToast = (message) => {
 };
 
 const displayStatsDetails = () => {
-  statSteps.text = today.adjusted.steps || 0;
-  statCals.text = today.adjusted.calories || 0;
-  statDist.text = today.adjusted.distance || 0;
-  statHr.text = hrm && bodyPresence.present ? hrm.heartRate : "--";
-  statAzm.text =
-    (today.adjusted.activeZoneMinutes &&
-      today.adjusted.activeZoneMinutes.total) ||
-    0;
-  statFloors.text = today.adjusted.elevationGain || 0;
+  statSteps.text = getStatFunction(statsIds.steps)();
+  statCals.text = getStatFunction(statsIds.cals)();
+  statDist.text = getStatFunction(statsIds.dist)();
+  statHr.text = getStatFunction(statsIds.hr)();
+  statAzm.text = getStatFunction(statsIds.azm)();
+  statFloors.text = getStatFunction(statsIds.floors)();
 
   statsDetailsElement.style.display = "inline";
   statsDetailsElement.animate("enable"); //show
@@ -231,6 +235,7 @@ const setSettingsListener = () => {
     notConnectedIcon.style.display = "none";
     fetchStatsSettings();
     fetchHRToggleSetting();
+    fetchDistanceUnit();
     fetchWeatherConfiguredSetting();
   };
 
@@ -352,6 +357,7 @@ const setSettingsListener = () => {
       case companionCommands.settingsChanged:
         fetchStatsSettings();
         fetchHRToggleSetting();
+        fetchDistanceUnit();
         fetchWeatherConfiguredSetting();
         break;
       case companionCommands.disableHRSetting:
@@ -368,6 +374,12 @@ const setSettingsListener = () => {
         if (weatherConfigured) {
           fetchTodayWeather();
         }
+        break;
+      case companionCommands.updateDistanceUnit:
+        const { distanceUnit } = data;
+
+        updateSettingsFile({ distanceUnit });
+        break;
       default:
         break;
     }
@@ -425,6 +437,19 @@ const initializeCornerSettings = (payload) => {
   updateCornerStats();
 };
 
+const calculateDistance = (meters, distanceUnit) => {
+  switch (distanceUnit) {
+    case distanceIds.km:
+      return (meters / 1000).toFixed(2);
+    case distanceIds.yards:
+      return (meters * 1.0936133).toFixed(0);
+    case distanceIds.miles:
+      return (meters * 0.000621371192).toFixed(2);
+    default:
+      return meters.toFixed(0);
+  }
+};
+
 const getStatFunction = (stat) => {
   switch (stat) {
     case statsIds.steps:
@@ -432,7 +457,12 @@ const getStatFunction = (stat) => {
     case statsIds.cals:
       return () => today.adjusted.calories || 0;
     case statsIds.dist:
-      return () => today.adjusted.distance || 0;
+      return () => {
+        const distanceUnit = getSettingFromFile("distanceUnit");
+        const meters = today.adjusted.distance || 0;
+
+        return calculateDistance(meters, distanceUnit);
+      };
     case statsIds.hr:
       return () => (hrm && bodyPresence.present ? hrm.heartRate : "--");
     case statsIds.azm:
