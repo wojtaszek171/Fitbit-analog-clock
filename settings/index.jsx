@@ -96,7 +96,7 @@ function settingsComponent(props) {
               Tap displayed weather to show details about weather for 5 days.
             </Text>
             <TextInput
-              label="OpenWeatherMap Key"
+              label="OpenWeatherMap API Key"
               settingsKey="weatherApiKey"
               disabled={!weatherEnabled}
             />
@@ -104,29 +104,29 @@ function settingsComponent(props) {
               settingsKey="temperatureUnit"
               label="Temperature unit:"
               options={[
-                { name: "°F", value: tempIds.f },
-                { name: "°K", value: tempIds.k },
-                { name: "°C", value: tempIds.c },
+                { name: "Fahrenheit (°F)", value: tempIds.f },
+                { name: "Kelvin (°K)", value: tempIds.k },
+                { name: "Celsius (°C)", value: tempIds.c },
               ]}
               disabled={!weatherEnabled}
             />
             <Toggle
-              label="Use GPS"
+              label="Enable GPS for Location"
               settingsKey="gpsEnabled"
               disabled={!weatherEnabled}
             />
             <TextInput
-              label="City to fetch (can not specify small town, use GPS)"
+              label="Specify City Name (may not be accurate)"
               settingsKey="weatherCity"
               disabled={!weatherEnabled || gpsEnabled}
             />
             <Select
               settingsKey="updateEvery"
-              label="Automatic update weather every:"
+              label="Update Weather Every:"
               options={[
-                { name: "15 min", value: 15 },
-                { name: "30 min", value: 30 },
-                { name: "60 min", value: 60 },
+                { name: "15 Minutes", value: 15 },
+                { name: "30 Minutes", value: 30 },
+                { name: "1 Hour", value: 60 },
               ]}
               disabled={!weatherEnabled}
             />
