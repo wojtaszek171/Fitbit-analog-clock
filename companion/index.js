@@ -18,6 +18,7 @@ import {
   getIsWeatherConfigured,
   isGPSEnabled,
   getDistanceUnit,
+  getShowBatteryIndicator,
 } from "./settingsSelector";
 
 const getWeatherUrlUnit = (unit) => {
@@ -252,6 +253,13 @@ const returnDistanceUnit = () => {
   });
 };
 
+const returnShowBatteryIndicator = () => {
+  messaging.peerSocket.send({
+    command: companionCommands.showBatteryIndicator,
+    showBatteryIndicator: getShowBatteryIndicator(),
+  });
+};
+
 settingsStorage.setItem("modelId", device.modelId);
 
 messaging.peerSocket.onmessage = (evt) => {
@@ -277,6 +285,9 @@ messaging.peerSocket.onmessage = (evt) => {
       break;
     case appCommands.updateDistanceUnit:
       returnDistanceUnit();
+      break;
+    case appCommands.showBatteryIndicator:
+      returnShowBatteryIndicator();
       break;
     default:
       break;
@@ -309,6 +320,12 @@ settingsStorage.onchange = (evt) => {
       messaging.peerSocket.send({
         command: companionCommands.updateDistanceUnit,
         distanceUnit: getDistanceUnit(),
+      });
+      break;
+    case "showBatteryIndicator":
+      messaging.peerSocket.send({
+        command: companionCommands.showBatteryIndicator,
+        showBatteryIndicator: getShowBatteryIndicator(),
       });
       break;
     default:

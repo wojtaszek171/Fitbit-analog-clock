@@ -17,6 +17,7 @@ export const initializeSettings = () => {
     },
     hrIconEnabled: true,
     distanceUnit: "meters",
+    showBatteryIndicator: false,
   };
 
   fs.writeFileSync(SETTINGS_FILE, settingsKeys, "json");

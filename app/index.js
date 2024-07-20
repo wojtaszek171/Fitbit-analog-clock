@@ -61,6 +61,7 @@ const rbStat = document.getElementById("rbStat");
 const heartRateSection = document.getElementById("heartRate");
 const batteryRect = document.getElementById("batIndicator");
 const batteryPercent = document.getElementById("batPercent");
+const batteryIndicatorFull = document.getElementById("batteryIndicatorFull");
 
 let hrm = null; // heart rate sensor data
 let bodyPresence = null; // body presence sensor data
@@ -188,6 +189,12 @@ const fetchDistanceUnit = () => {
   });
 };
 
+const fetchShowBatteryIndicator = () => {
+  sendMessage({
+    command: appCommands.showBatteryIndicator,
+  });
+};
+
 const fetchWeatherConfiguredSetting = () => {
   sendMessage({
     command: appCommands.weatherConfigured,
@@ -250,6 +257,7 @@ const setSettingsListener = () => {
     fetchStatsSettings();
     fetchHRToggleSetting();
     fetchDistanceUnit();
+    fetchShowBatteryIndicator();
     fetchWeatherConfiguredSetting();
   };
 
@@ -365,6 +373,7 @@ const setSettingsListener = () => {
         fetchStatsSettings();
         fetchHRToggleSetting();
         fetchDistanceUnit();
+        fetchShowBatteryIndicator();
         fetchWeatherConfiguredSetting();
         break;
       case companionCommands.disableHRSetting:
@@ -387,6 +396,12 @@ const setSettingsListener = () => {
 
         updateSettingsFile({ distanceUnit });
         break;
+      case companionCommands.showBatteryIndicator:
+        const { showBatteryIndicator } = data;
+
+        updateSettingsFile({ showBatteryIndicator });
+        showBatteryIndicatorComponent(showBatteryIndicator);
+        break;
       default:
         break;
     }
@@ -398,6 +413,14 @@ const showHRIcon = (hrIconEnabled) => {
     heartRateSection.style.display = "inline";
   } else {
     heartRateSection.style.display = "none";
+  }
+};
+
+const showBatteryIndicatorComponent = (showBatteryIndicator) => {
+  if (showBatteryIndicator) {
+    batteryIndicatorFull?.style?.opacity = 1;
+  } else {
+    batteryIndicatorFull?.style?.opacity = 0;
   }
 };
 
@@ -550,7 +573,7 @@ const recoverLastSettings = () => {
   const cornerStats = getSettingFromFile("cornerStats");
   initializeCornerSettings(cornerStats || {});
   showHRIcon(!!getSettingFromFile("hrIconEnabled"));
-
+  showBatteryIndicatorComponent(!!getSettingFromFile("showBatteryIndicator"));
   enableWeatherSection(getSettingFromFile(false)); //disable weather at start
 };
 
