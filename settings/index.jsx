@@ -62,6 +62,10 @@ function settingsComponent(props) {
           options={cornerOptions}
         />
         <Toggle label="Disable default HR" settingsKey="disableHRToggle" />
+        <Toggle
+          label="Show battery indicator"
+          settingsKey="showBatteryIndicator"
+        />
         <Select
           settingsKey="distanceUnit"
           label="Distance unit:"

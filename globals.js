@@ -56,6 +56,7 @@ export const appCommands = {
   settingsChanged: "a_settingsChanged",
   disableHRSetting: "a_disableHRSetting",
   updateDistanceUnit: "a_updateDistanceUnit",
+  showBatteryIndicator: "a_showBatteryIndicator",
 };
 
 export const companionCommands = {
@@ -66,6 +67,7 @@ export const companionCommands = {
   settingsChanged: "c_settingsChanged",
   disableHRSetting: "c_disableHRSetting",
   updateDistanceUnit: "c_updateDistanceUnit",
+  showBatteryIndicator: "c_showBatteryIndicator",
 };
 
 export const errorMessages = {

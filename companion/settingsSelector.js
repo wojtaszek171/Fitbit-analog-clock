@@ -40,6 +40,11 @@ export const getDistanceUnit = () => {
   return distanceUnit ? distanceUnit.values[0].value : "meters";
 };
 
+export const getShowBatteryIndicator = () => {
+  const showBatteryIndicator = settingsStorage.getItem("showBatteryIndicator");
+  return showBatteryIndicator === "true";
+};
+
 export const getAPIKey = () => {
   const weatherApiSetting = JSON.parse(
     settingsStorage.getItem("weatherApiKey")
