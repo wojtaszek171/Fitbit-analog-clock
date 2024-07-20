@@ -162,6 +162,18 @@
         <rect id="weatherButton" height="80" width="120" pointer-events="visible" opacity="0" fill="#ffffff"/>
         <rect y="$-80" x="100%-120" id="showStatsButton" height="80" width="120" pointer-events="visible" opacity="0" fill="red"/>
       </section>
+      <section x="50%-20" y="0" width="40" height="20">
+        <line x1="0" y1="50%-1" x2="100%" y2="50%" stroke-width="20" fill="#000000"/>
+        <line x1="25%" y1="49%" x2="75%" y2="49%" stroke-width="21" fill="#cacaca"/>
+        <line x1="25%" y1="49%" x2="75%" y2="49%" stroke-width="15" fill="#000000"/>
+        <rect id="batIndicator" x="2" y="2" width="50%-2" height="100%-3" fill="#30c020" opacity="0.7"/>
+        <arc x="-3" y="0" width="50%" height="100%" fill="#000000" arc-width="2" sweep-angle="180" start-angle="180" />
+        <arc x="0" y="0" width="50%" height="100%" fill="#cacaca" arc-width="2" sweep-angle="180" start-angle="180" />
+        <arc x="50%+3" y="0" width="50%" height="100%" fill="#000000" arc-width="3" sweep-angle="180" start-angle="0" />
+        <arc x="50%+5" y="0" width="50%" height="100%" fill="#000000" arc-width="2" sweep-angle="180" start-angle="0" />
+        <arc x="50%" y="0" width="50%" height="100%" fill="#cacaca" arc-width="2" sweep-angle="180" start-angle="0" />
+        <text x="50%+1" y="50%+5" width="100%" alignment-baseline="central" id="batPercent" fill="#cacaca"></text>
+      </section>
     </use>
     <use id="weatherView" href="#panoramaview-item">
       <svg viewport-fill="#111111">

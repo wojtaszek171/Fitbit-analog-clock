@@ -89,6 +89,14 @@
   text-length: 10;
 }
 
+#batPercent {
+  font-size: 18;
+  font-weight: bold;
+  fill: "#ffffff";
+  text-anchor: middle;
+  text-length: 3;
+}
+
 #dateText {
   font-size: 18;
   font-weight: bold;
