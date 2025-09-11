@@ -1,4 +1,4 @@
-#  Fitbit-analog-clock
+# Fitbit-analog-clock
 Fitbit analog clock with weather support available at: https://gallery.fitbit.com/details/0b0822d1-5878-47a1-8440-1cfe25107ef2
 
 Used technologies:
